@@ -1,0 +1,148 @@
+Category,Name,Amount,Price
+Dairy & Eggs,Whole Milk,1L,1.49
+Dairy & Eggs,Skim Milk,1L,1.39
+Dairy & Eggs,Heavy Cream,250ml,2.29
+Dairy & Eggs,Sour Cream,200g,1.79
+Dairy & Eggs,Unsalted Butter,250g,2.99
+Dairy & Eggs,Salted Butter,250g,2.99
+Dairy & Eggs,Large Eggs,12 count,3.49
+Dairy & Eggs,Large Eggs,6 count,1.99
+Dairy & Eggs,Cheddar Cheese Block,200g,2.89
+Dairy & Eggs,Shredded Mozzarella,200g,2.49
+Dairy & Eggs,Greek Yogurt (Plain),500g,2.99
+Dairy & Eggs,Parmesan Cheese (Grated),100g,2.79
+Dairy & Eggs,Cream Cheese,200g,2.19
+Dairy & Eggs,Cottage Cheese,400g,2.39
+Produce,Bananas,1kg,1.59
+Produce,Apples (Gala),1kg,2.99
+Produce,Tomatoes,1kg,2.49
+Produce,Yellow Onions,1kg,1.29
+Produce,Red Onions,500g,1.19
+Produce,Garlic,3 heads,1.49
+Produce,Russet Potatoes,2kg,3.29
+Produce,Carrots,1kg,1.19
+Produce,Fresh Spinach,200g,1.99
+Produce,Lemons,500g,1.79
+Produce,Limes,500g,1.89
+Produce,Avocados,3 count,2.99
+Produce,Bell Peppers (Mixed),3 count,2.79
+Produce,Broccoli,500g,1.89
+Produce,Cucumbers,1 count,0.89
+Produce,Strawberries,400g,3.49
+Produce,Button Mushrooms,250g,1.69
+Produce,Fresh Cilantro,1 bunch,0.99
+Produce,Fresh Basil,30g,1.49
+Produce,Zucchini,500g,1.39
+Meat & Seafood,Chicken Breast (Boneless),1kg,8.99
+Meat & Seafood,Chicken Thighs (Skinless),1kg,6.99
+Meat & Seafood,Ground Beef (80/20),500g,4.99
+Meat & Seafood,Pork Chops,500g,4.49
+Meat & Seafood,Bacon Strips,200g,3.29
+Meat & Seafood,Fresh Salmon Fillet,400g,9.49
+Meat & Seafood,Canned Tuna in Oil,160g,1.59
+Meat & Seafood,Pork Sausages,400g,3.79
+Meat & Seafood,Turkey Breast Slices,200g,2.99
+Pantry,All-Purpose Flour,1kg,1.19
+Pantry,White Sugar,1kg,1.29
+Pantry,Brown Sugar,500g,1.49
+Pantry,Powdered Sugar,500g,1.39
+Pantry,White Rice (Long Grain),1kg,1.89
+Pantry,Brown Rice,1kg,2.19
+Pantry,Spaghetti,500g,1.09
+Pantry,Penne Pasta,500g,1.09
+Pantry,Rolled Oats,1kg,2.29
+Pantry,Extra Virgin Olive Oil,1L,8.99
+Pantry,Vegetable Oil,1L,2.79
+Pantry,Sesame Oil,250ml,3.49
+Pantry,Apple Cider Vinegar,500ml,2.19
+Pantry,White Vinegar,1L,1.19
+Pantry,Pure Honey,500g,4.99
+Pantry,Maple Syrup,250ml,5.49
+Baking,Baking Soda,250g,0.99
+Baking,Baking Powder,200g,1.29
+Baking,Active Dry Yeast,50g,1.49
+Baking,Vanilla Extract,50ml,3.99
+Baking,Semisweet Chocolate Chips,250g,2.69
+Baking,Unsweetened Cocoa Powder,200g,2.49
+Baking,Cornstarch,250g,1.19
+Baking,Breadcrumbs,250g,1.29
+Canned Goods,Canned Black Beans,400g,0.99
+Canned Goods,Canned Chickpeas,400g,0.99
+Canned Goods,Diced Tomatoes,400g,0.89
+Canned Goods,Tomato Paste,150g,0.79
+Canned Goods,Chicken Broth,1L,1.99
+Canned Goods,Vegetable Broth,1L,1.99
+Canned Goods,Coconut Milk,400ml,1.69
+Canned Goods,Peanut Butter,500g,3.29
+Canned Goods,Strawberry Jam,350g,2.49
+Canned Goods,Marinara Pasta Sauce,680g,2.29
+Condiments & Spices,Fine Table Salt,1kg,0.69
+Condiments & Spices,Ground Black Pepper,100g,2.19
+Condiments & Spices,Garlic Powder,100g,1.79
+Condiments & Spices,Onion Powder,100g,1.79
+Condiments & Spices,Paprika,100g,1.89
+Condiments & Spices,Ground Cumin,100g,1.99
+Condiments & Spices,Ground Cinnamon,100g,1.89
+Condiments & Spices,Dried Oregano,50g,1.49
+Condiments & Spices,Soy Sauce,250ml,1.99
+Condiments & Spices,Hot Sauce,150ml,2.19
+Condiments & Spices,Tomato Ketchup,500g,2.29
+Condiments & Spices,Yellow Mustard,250g,1.49
+Condiments & Spices,Mayonnaise,400g,2.89
+Bakery,Sandwich Bread (White),500g,1.69
+Bakery,Whole Wheat Bread,500g,1.99
+Bakery,Hamburger Buns,6 pack,1.89
+Bakery,Flour Tortillas,8 pack,1.99
+Bakery,Butter Croissants,4 pack,2.99
+Frozen,Frozen Green Peas,500g,1.49
+Frozen,Frozen Mixed Vegetables,500g,1.59
+Frozen,Frozen Mixed Berries,400g,3.29
+Frozen,Raw Frozen Shrimp,400g,6.99
+Frozen,Frozen Pizza (Margherita),400g,3.49
+Frozen,Vanilla Ice Cream,1L,3.99
+Beverages,Bottled Mineral Water,1.5L,0.59
+Beverages,Bottled Water (6-Pack),6x1.5L,2.99
+Beverages,Orange Juice (100%),1L,2.49
+Beverages,Apple Juice,1L,2.19
+Beverages,Whole Coffee Beans,500g,6.99
+Beverages,Black Tea Bags,100 count,3.29
+Beverages,Sparkling Water,1L,0.79
+Snacks,Potato Chips,150g,1.79
+Snacks,Tortilla Chips,200g,1.99
+Snacks,Whole Almonds,200g,3.49
+Snacks,Walnut Halves,200g,3.89
+Snacks,Dark Chocolate Bar (70%),100g,1.69
+Produce,Fresh Ginger,150g,1.29
+Produce,Celery,1 stalk,1.49
+Produce,Green Onions (Scallions),1 bunch,0.99
+Produce,Jalapeño Peppers,200g,1.19
+Produce,Fresh Flat-Leaf Parsley,1 bunch,0.99
+Produce,Sweet Potatoes,1kg,2.49
+Condiments & Spices,Dijon Mustard,200g,1.99
+Condiments & Spices,Worcestershire Sauce,290ml,2.49
+Condiments & Spices,Kosher Salt,1kg,1.49
+Condiments & Spices,Red Pepper Flakes,100g,1.89
+Condiments & Spices,Smoked Paprika,100g,1.99
+Condiments & Spices,Cayenne Pepper,100g,1.89
+Condiments & Spices,Ground Turmeric,100g,1.99
+Condiments & Spices,Dried Thyme,50g,1.49
+Condiments & Spices,Dried Rosemary,50g,1.49
+Pantry,Red Wine Vinegar,500ml,2.29
+Pantry,Balsamic Vinegar,500ml,3.49
+Pantry,Jasmine Rice,1kg,2.49
+Pantry,Basmati Rice,1kg,2.79
+Pantry,Bread Flour,1kg,1.49
+Pantry,Coconut Oil,500ml,4.49
+Canned Goods,Beef Broth,1L,1.99
+Canned Goods,Canned Kidney Beans,400g,0.99
+Canned Goods,Canned Cannellini Beans,400g,0.99
+Meat & Seafood,Ground Turkey,500g,4.29
+Meat & Seafood,Beef Steak (Ribeye or Sirloin),300g,7.99
+Meat & Seafood,Pork Tenderloin,500g,5.49
+Meat & Seafood,Cod / White Fish Fillets,400g,6.49
+Dairy & Eggs,Buttermilk,500ml,1.49
+Dairy & Eggs,Half-and-Half,500ml,1.99
+Dairy & Eggs,Ricotta Cheese,250g,2.49
+Dairy & Eggs,Feta Cheese,200g,2.69
+Frozen,Frozen Sweet Corn,500g,1.39
+Frozen,Frozen Chopped Spinach,450g,1.49
