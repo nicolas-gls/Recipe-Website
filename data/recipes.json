@@ -1,0 +1,900 @@
+[
+  {
+    "name": "Classic Spaghetti Bolognese",
+    "description": "A rich and savory hearty beef pasta topped with shredded parmesan cheese.",
+    "prep_time": 15,
+    "cook_time": 30,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Boil spaghetti in salted water according to package instructions.", "Heat extra virgin olive oil in a skillet and brown the ground beef over medium heat.", "Add diced yellow onions and minced garlic, cooking until translucent.", "Stir in tomato paste, diced tomatoes, dried oregano, fine table salt, and ground black pepper.", "Simmer for 20 minutes and serve over spaghetti topped with parmesan cheese."],
+    "ingredients": [
+      { "name": "spaghetti", "amount": 400, "unit": "g" },
+      { "name": "ground beef", "amount": 500, "unit": "g" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "diced tomatoes", "amount": 400, "unit": "g" },
+      { "name": "tomato paste", "amount": 30, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 15, "unit": "ml" },
+      { "name": "dried oregano", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" },
+      { "name": "parmesan cheese", "amount": 50, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Garlic Butter Pan-Seared Salmon",
+    "description": "Crispy pan-seared fresh salmon fillets drizzled with garlic butter and lemon.",
+    "prep_time": 10,
+    "cook_time": 12,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Season fresh salmon fillets with fine table salt and ground black pepper.", "Melt unsalted butter in a pan over medium-high heat.", "Sear salmon for 4 minutes on each side until golden.", "Add minced garlic, fresh flat-leaf parsley, and fresh lemon juice to pan and spoon butter glaze over salmon."],
+    "ingredients": [
+      { "name": "fresh salmon fillet", "amount": 2, "unit": "qty" },
+      { "name": "unsalted butter", "amount": 30, "unit": "g" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "fresh flat-leaf parsley", "amount": 1, "unit": "bunch" },
+      { "name": "lemons", "amount": 1, "unit": "qty" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Beef and Broccoli Stir-Fry",
+    "description": "Tender beef steak strips sautéed with fresh broccoli florets in a savory soy glaze.",
+    "prep_time": 15,
+    "cook_time": 10,
+    "difficulty": "Medium",
+    "servings": 3,
+    "steps": ["Slice beef steak into thin strips.", "Whisk soy sauce, brown sugar, cornstarch, minced garlic, and fresh ginger together.", "Heat vegetable oil in a wok and sear beef strips; remove and set aside.", "Stir-fry broccoli florets until tender-crisp, return beef to pan, pour sauce, and toss until thickened.", "Drizzle with sesame oil before serving."],
+    "ingredients": [
+      { "name": "beef steak", "amount": 400, "unit": "g" },
+      { "name": "broccoli", "amount": 300, "unit": "g" },
+      { "name": "soy sauce", "amount": 45, "unit": "ml" },
+      { "name": "brown sugar", "amount": 20, "unit": "g" },
+      { "name": "cornstarch", "amount": 10, "unit": "g" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "fresh ginger", "amount": 10, "unit": "g" },
+      { "name": "vegetable oil", "amount": 15, "unit": "ml" },
+      { "name": "sesame oil", "amount": 10, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Chicken Fried Rice",
+    "description": "Quick weekday fried rice made with chicken breast, green peas, carrots, and egg.",
+    "prep_time": 10,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Dice chicken breast and sauté in sesame oil until fully cooked.", "Push chicken aside, scramble large eggs in the pan.", "Stir in carrots, frozen green peas, minced garlic, and cold cooked white rice.", "Pour in soy sauce and toss until everything is heated through.", "Garnish with chopped green onions."],
+    "ingredients": [
+      { "name": "white rice", "amount": 300, "unit": "g" },
+      { "name": "chicken breast", "amount": 300, "unit": "g" },
+      { "name": "frozen green peas", "amount": 100, "unit": "g" },
+      { "name": "carrots", "amount": 100, "unit": "g" },
+      { "name": "large eggs", "amount": 2, "unit": "qty" },
+      { "name": "soy sauce", "amount": 30, "unit": "ml" },
+      { "name": "sesame oil", "amount": 15, "unit": "ml" },
+      { "name": "green onions", "amount": 1, "unit": "bunch" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" }
+    ]
+  },
+  {
+    "name": "Fresh Guacamole & Chips",
+    "description": "Creamy avocado dip mixed with fresh lime juice, cilantro, and red onions.",
+    "prep_time": 15,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Mash ripe avocados in a medium mixing bowl.", "Fold in finely diced red onions, jalapeño peppers, and fresh cilantro.", "Squeeze fresh lime juice over the mixture and sprinkle with kosher salt.", "Serve immediately with crisp tortilla chips."],
+    "ingredients": [
+      { "name": "avocados", "amount": 3, "unit": "qty" },
+      { "name": "limes", "amount": 2, "unit": "qty" },
+      { "name": "red onions", "amount": 1, "unit": "qty" },
+      { "name": "fresh cilantro", "amount": 1, "unit": "bunch" },
+      { "name": "jalapeño peppers", "amount": 1, "unit": "qty" },
+      { "name": "kosher salt", "amount": 5, "unit": "g" },
+      { "name": "tortilla chips", "amount": 200, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Fluffy Butter Pancakes",
+    "description": "Golden stack of classic homemade pancakes served with sweet maple syrup.",
+    "prep_time": 10,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Whisk all-purpose flour, baking powder, fine table salt, and white sugar in a bowl.", "Combine whole milk, large eggs, and melted unsalted butter in a separate jug.", "Pour wet ingredients into dry and gently fold together.", "Ladle batter onto a buttered skillet over medium heat until bubbles form, then flip.", "Serve warm topped with butter and maple syrup."],
+    "ingredients": [
+      { "name": "all-purpose flour", "amount": 250, "unit": "g" },
+      { "name": "baking powder", "amount": 10, "unit": "g" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" },
+      { "name": "white sugar", "amount": 25, "unit": "g" },
+      { "name": "whole milk", "amount": 300, "unit": "ml" },
+      { "name": "large eggs", "amount": 2, "unit": "qty" },
+      { "name": "unsalted butter", "amount": 50, "unit": "g" },
+      { "name": "maple syrup", "amount": 100, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Classic Cinnamon French Toast",
+    "description": "Thick slices of sandwich bread dipped in spiced egg custard and golden pan-fried.",
+    "prep_time": 5,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Whisk large eggs, whole milk, ground cinnamon, and vanilla extract in a flat dish.", "Dip sandwich bread slices into the egg custard, coating both sides.", "Melt unsalted butter in a skillet and cook bread for 3 minutes per side until golden brown.", "Drizzle warm maple syrup on top."],
+    "ingredients": [
+      { "name": "sandwich bread", "amount": 4, "unit": "qty" },
+      { "name": "large eggs", "amount": 3, "unit": "qty" },
+      { "name": "whole milk", "amount": 100, "unit": "ml" },
+      { "name": "ground cinnamon", "amount": 3, "unit": "g" },
+      { "name": "vanilla extract", "amount": 5, "unit": "ml" },
+      { "name": "unsalted butter", "amount": 25, "unit": "g" },
+      { "name": "maple syrup", "amount": 60, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Chickpea & Spinach Coconut Curry",
+    "description": "A rich vegetarian chickpea curry simmered in coconut milk and warm spices.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Sauté diced yellow onions, garlic, and fresh ginger in vegetable oil.", "Add ground cumin, ground turmeric, and cayenne pepper, stirring for 1 minute.", "Pour in canned chickpeas and coconut milk, simmer for 15 minutes.", "Fold in fresh spinach until wilted, season with fine table salt, and serve."],
+    "ingredients": [
+      { "name": "canned chickpeas", "amount": 400, "unit": "g" },
+      { "name": "fresh spinach", "amount": 150, "unit": "g" },
+      { "name": "coconut milk", "amount": 400, "unit": "ml" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "fresh ginger", "amount": 10, "unit": "g" },
+      { "name": "ground cumin", "amount": 5, "unit": "g" },
+      { "name": "ground turmeric", "amount": 5, "unit": "g" },
+      { "name": "cayenne pepper", "amount": 2, "unit": "g" },
+      { "name": "vegetable oil", "amount": 15, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Creamy Tomato Basil Soup",
+    "description": "Comforting velvety tomato soup infused with garlic and fresh basil.",
+    "prep_time": 10,
+    "cook_time": 25,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Melt unsalted butter in a soup pot and sauté yellow onions and garlic.", "Add diced tomatoes and vegetable broth, bring to a gentle boil.", "Simmer for 15 minutes, then blend until smooth.", "Stir in heavy cream and fresh basil, adjust seasoning with fine table salt and ground black pepper."],
+    "ingredients": [
+      { "name": "diced tomatoes", "amount": 800, "unit": "g" },
+      { "name": "vegetable broth", "amount": 500, "unit": "ml" },
+      { "name": "heavy cream", "amount": 100, "unit": "ml" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "unsalted butter", "amount": 30, "unit": "g" },
+      { "name": "fresh basil", "amount": 1, "unit": "bunch" },
+      { "name": "fine table salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Loaded Beef Taco Rice Bowl",
+    "description": "Seasoned ground beef served over fluffy jasmine rice with black beans and corn.",
+    "prep_time": 15,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Cook jasmine rice according to package directions.", "Brown ground beef with diced yellow onions, garlic powder, ground cumin, paprika, and fine table salt.", "Warm canned black beans and frozen sweet corn.", "Assemble bowls with rice, spiced beef, black beans, corn, bell peppers, sour cream, and grated cheddar cheese block."],
+    "ingredients": [
+      { "name": "ground beef", "amount": 400, "unit": "g" },
+      { "name": "jasmine rice", "amount": 250, "unit": "g" },
+      { "name": "canned black beans", "amount": 200, "unit": "g" },
+      { "name": "frozen sweet corn", "amount": 150, "unit": "g" },
+      { "name": "bell peppers", "amount": 1, "unit": "qty" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "ground cumin", "amount": 5, "unit": "g" },
+      { "name": "paprika", "amount": 5, "unit": "g" },
+      { "name": "garlic powder", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 4, "unit": "g" },
+      { "name": "sour cream", "amount": 100, "unit": "g" },
+      { "name": "cheddar cheese block", "amount": 100, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Oven-Baked Seasoned Pork Chops",
+    "description": "Juicy pork chops coated in a savory paprika and herb spice rub.",
+    "prep_time": 10,
+    "cook_time": 25,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Preheat oven to 200°C.", "Mix garlic powder, onion powder, smoked paprika, dried thyme, fine table salt, and ground black pepper.", "Coat pork chops with extra virgin olive oil and rub spice mixture on both sides.", "Bake for 20-25 minutes until cooked through."],
+    "ingredients": [
+      { "name": "pork chops", "amount": 4, "unit": "qty" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "garlic powder", "amount": 5, "unit": "g" },
+      { "name": "onion powder", "amount": 5, "unit": "g" },
+      { "name": "smoked paprika", "amount": 5, "unit": "g" },
+      { "name": "dried thyme", "amount": 3, "unit": "g" },
+      { "name": "fine table salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Roasted Rosemary Lemon Chicken Thighs",
+    "description": "Crispy baked chicken thighs seasoned with garlic, dried rosemary, and lemon juice.",
+    "prep_time": 10,
+    "cook_time": 35,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Preheat oven to 200°C.", "Toss chicken thighs with extra virgin olive oil, minced garlic, dried rosemary, dried thyme, kosher salt, and ground black pepper.", "Arrange lemon slices around chicken in a baking dish.", "Roast for 35 minutes until skin is crispy and internal temperature reaches 74°C."],
+    "ingredients": [
+      { "name": "chicken thighs", "amount": 600, "unit": "g" },
+      { "name": "lemons", "amount": 1, "unit": "qty" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "dried rosemary", "amount": 5, "unit": "g" },
+      { "name": "dried thyme", "amount": 3, "unit": "g" },
+      { "name": "kosher salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Bacon Cheeseburger",
+    "description": "Juicy beef patties served on toasted buns with melted cheddar and crispy bacon.",
+    "prep_time": 15,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Form ground beef into patties, season with fine table salt and ground black pepper.", "Fry bacon strips in a pan until crispy.", "Sear beef patties in the skillet for 4 minutes per side, placing slices of cheddar cheese block on top during the last minute.", "Assemble on hamburger buns with sliced tomatoes, sliced yellow onions, tomato ketchup, and yellow mustard."],
+    "ingredients": [
+      { "name": "ground beef", "amount": 300, "unit": "g" },
+      { "name": "hamburger buns", "amount": 2, "unit": "qty" },
+      { "name": "cheddar cheese block", "amount": 60, "unit": "g" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "tomatoes", "amount": 1, "unit": "qty" },
+      { "name": "bacon strips", "amount": 4, "unit": "qty" },
+      { "name": "tomato ketchup", "amount": 30, "unit": "g" },
+      { "name": "yellow mustard", "amount": 15, "unit": "g" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Greek Salad",
+    "description": "Crisp cucumbers, juicy tomatoes, red onions, and feta cheese tossed in oregano olive oil.",
+    "prep_time": 15,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Chop cucumbers, tomatoes, and red onions into thick chunks.", "Combine vegetables in a large bowl and add cubed feta cheese.", "Drizzle with extra virgin olive oil and red wine vinegar.", "Season with dried oregano and fine table salt before gently tossing."],
+    "ingredients": [
+      { "name": "cucumbers", "amount": 300, "unit": "g" },
+      { "name": "tomatoes", "amount": 300, "unit": "g" },
+      { "name": "red onions", "amount": 1, "unit": "qty" },
+      { "name": "feta cheese", "amount": 150, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 45, "unit": "ml" },
+      { "name": "red wine vinegar", "amount": 15, "unit": "ml" },
+      { "name": "dried oregano", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Warm Berry & Honey Oatmeal",
+    "description": "Hearty rolled oats cooked in milk, topped with berries, walnuts, and pure honey.",
+    "prep_time": 5,
+    "cook_time": 8,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Simmer rolled oats and whole milk in a small saucepan over medium heat for 5 minutes.", "Stir in ground cinnamon.", "Divide oatmeal into bowls and top with warmed frozen mixed berries and walnut halves.", "Drizzle with pure honey."],
+    "ingredients": [
+      { "name": "rolled oats", "amount": 100, "unit": "g" },
+      { "name": "whole milk", "amount": 350, "unit": "ml" },
+      { "name": "frozen mixed berries", "amount": 100, "unit": "g" },
+      { "name": "pure honey", "amount": 30, "unit": "ml" },
+      { "name": "ground cinnamon", "amount": 2, "unit": "g" },
+      { "name": "walnut halves", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Creamy Garlic Alfredo Penne",
+    "description": "Penne pasta tossed in a velvety cream, butter, and parmesan garlic sauce.",
+    "prep_time": 5,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Boil penne pasta in salted water until al dente.", "Melt unsalted butter in a pan and cook minced garlic for 1 minute.", "Pour in heavy cream and bring to a low boil.", "Stir in parmesan cheese until melted and smooth.", "Toss penne pasta into sauce and garnish with fresh flat-leaf parsley, fine table salt, and ground black pepper."],
+    "ingredients": [
+      { "name": "penne pasta", "amount": 400, "unit": "g" },
+      { "name": "heavy cream", "amount": 250, "unit": "ml" },
+      { "name": "parmesan cheese", "amount": 80, "unit": "g" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "unsalted butter", "amount": 40, "unit": "g" },
+      { "name": "fresh flat-leaf parsley", "amount": 1, "unit": "bunch" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Sizzling Shrimp Fajitas",
+    "description": "Seared shrimp cooked with colourful bell peppers, onions, and fajita spice.",
+    "prep_time": 15,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Toss thawed raw frozen shrimp with paprika, ground cumin, and extra virgin olive oil.", "Sauté sliced bell peppers and red onions until tender.", "Add shrimp to skillet and cook for 3-4 minutes until pink.", "Squeeze fresh lime juice over mixture and serve in warm flour tortillas."],
+    "ingredients": [
+      { "name": "raw frozen shrimp", "amount": 400, "unit": "g" },
+      { "name": "bell peppers", "amount": 2, "unit": "qty" },
+      { "name": "red onions", "amount": 1, "unit": "qty" },
+      { "name": "limes", "amount": 1, "unit": "qty" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "ground cumin", "amount": 5, "unit": "g" },
+      { "name": "paprika", "amount": 5, "unit": "g" },
+      { "name": "flour tortillas", "amount": 6, "unit": "qty" }
+    ]
+  },
+  {
+    "name": "Peanut Butter Banana Smoothie",
+    "description": "Creamy blend of ripe bananas, greek yogurt, skim milk, and peanut butter.",
+    "prep_time": 5,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Add bananas, greek yogurt, skim milk, peanut butter, and pure honey into a blender.", "Blend on high speed until completely smooth.", "Pour into glasses and serve cold."],
+    "ingredients": [
+      { "name": "bananas", "amount": 2, "unit": "qty" },
+      { "name": "greek yogurt", "amount": 150, "unit": "g" },
+      { "name": "skim milk", "amount": 250, "unit": "ml" },
+      { "name": "pure honey", "amount": 15, "unit": "ml" },
+      { "name": "peanut butter", "amount": 40, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Crispy Oven Roasted Potato Wedges",
+    "description": "Golden crispy potato wedges seasoned with garlic powder and paprika.",
+    "prep_time": 10,
+    "cook_time": 30,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Preheat oven to 220°C.", "Cut russet potatoes into wedges and toss with extra virgin olive oil.", "Season with paprika, garlic powder, fine table salt, and ground black pepper.", "Spread on baking sheet and roast for 30 minutes until golden and crispy."],
+    "ingredients": [
+      { "name": "russet potatoes", "amount": 800, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 45, "unit": "ml" },
+      { "name": "paprika", "amount": 5, "unit": "g" },
+      { "name": "garlic powder", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Roasted Sweet Potato & Black Bean Bowl",
+    "description": "Cubed roasted sweet potatoes paired with black beans, cilantro, and lime.",
+    "prep_time": 15,
+    "cook_time": 25,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Cube sweet potatoes and toss with extra virgin olive oil, ground cumin, and salt.", "Roast at 200°C for 25 minutes.", "Warm canned black beans in a pot.", "Combine sweet potatoes and black beans in bowls, garnish with fresh cilantro and a lime juice drizzle."],
+    "ingredients": [
+      { "name": "sweet potatoes", "amount": 500, "unit": "g" },
+      { "name": "canned black beans", "amount": 400, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "ground cumin", "amount": 5, "unit": "g" },
+      { "name": "limes", "amount": 1, "unit": "qty" },
+      { "name": "fresh cilantro", "amount": 1, "unit": "bunch" }
+    ]
+  },
+  {
+    "name": "Apple Cider Glazed Pork Tenderloin",
+    "description": "Seared pork tenderloin baked with sweet apple slices and rosemary glaze.",
+    "prep_time": 15,
+    "cook_time": 25,
+    "difficulty": "Medium",
+    "servings": 4,
+    "steps": ["Season pork tenderloin with fine table salt, ground black pepper, and dried rosemary.", "Sear tenderloin in melted unsalted butter over medium heat.", "Add sliced apples, apple cider vinegar, and maple syrup to skillet.", "Transfer to oven at 190°C and roast for 20 minutes."],
+    "ingredients": [
+      { "name": "pork tenderloin", "amount": 500, "unit": "g" },
+      { "name": "apples", "amount": 2, "unit": "qty" },
+      { "name": "apple cider vinegar", "amount": 30, "unit": "ml" },
+      { "name": "maple syrup", "amount": 30, "unit": "ml" },
+      { "name": "unsalted butter", "amount": 25, "unit": "g" },
+      { "name": "dried rosemary", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 4, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Caprese Salad",
+    "description": "Fresh tomato slices layered with mozzarella, basil, and balsamic drizzle.",
+    "prep_time": 10,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Slice ripe tomatoes into thick discs.", "Arrange tomatoes on a platter with fresh basil leaves and shredded mozzarella.", "Drizzle extra virgin olive oil and balsamic vinegar on top.", "Sprinkle with fine table salt."],
+    "ingredients": [
+      { "name": "tomatoes", "amount": 300, "unit": "g" },
+      { "name": "shredded mozzarella", "amount": 150, "unit": "g" },
+      { "name": "fresh basil", "amount": 1, "unit": "bunch" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "balsamic vinegar", "amount": 15, "unit": "ml" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Chocolate Chip Cookies",
+    "description": "Chewy bakery-style cookies loaded with semisweet chocolate chips.",
+    "prep_time": 15,
+    "cook_time": 12,
+    "difficulty": "Medium",
+    "servings": 6,
+    "steps": ["Preheat oven to 180°C.", "Cream soft unsalted butter, brown sugar, and white sugar together.", "Beat in large eggs and vanilla extract.", "Whisk all-purpose flour, baking soda, and fine table salt, then mix into wet ingredients.", "Fold in semisweet chocolate chips, drop spoonfuls on pan, and bake for 10-12 minutes."],
+    "ingredients": [
+      { "name": "all-purpose flour", "amount": 280, "unit": "g" },
+      { "name": "baking soda", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "unsalted butter", "amount": 170, "unit": "g" },
+      { "name": "brown sugar", "amount": 150, "unit": "g" },
+      { "name": "white sugar", "amount": 100, "unit": "g" },
+      { "name": "large eggs", "amount": 2, "unit": "qty" },
+      { "name": "vanilla extract", "amount": 5, "unit": "ml" },
+      { "name": "semisweet chocolate chips", "amount": 200, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Scrambled Eggs & Bacon",
+    "description": "Soft scrambled eggs cooked in butter alongside crispy smoked bacon strips.",
+    "prep_time": 5,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Fry bacon strips in skillet until crispy; drain on paper towels.", "Whisk large eggs, whole milk, fine table salt, and ground black pepper.", "Melt unsalted butter in low heat pan and pour egg mix.", "Gently stir until soft curds form and serve warm with bacon."],
+    "ingredients": [
+      { "name": "large eggs", "amount": 4, "unit": "qty" },
+      { "name": "whole milk", "amount": 30, "unit": "ml" },
+      { "name": "unsalted butter", "amount": 15, "unit": "g" },
+      { "name": "bacon strips", "amount": 6, "unit": "qty" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" },
+      { "name": "ground black pepper", "amount": 1, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Baked Cod in Italian Tomato Sauce",
+    "description": "Flaky white fish baked in garlic, herb, and tomato sauce.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Preheat oven to 200°C.", "In a skillet, cook minced garlic in extra virgin olive oil, then add diced tomatoes and dried oregano.", "Place cod / white fish fillets in a baking dish and pour tomato sauce over top.", "Bake for 15-20 minutes until fish flakes easily with a fork.", "Season with fine table salt and ground black pepper."],
+    "ingredients": [
+      { "name": "cod / white fish fillets", "amount": 450, "unit": "g" },
+      { "name": "diced tomatoes", "amount": 400, "unit": "g" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "extra virgin olive oil", "amount": 20, "unit": "ml" },
+      { "name": "dried oregano", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Classic Tuna Salad Sandwich",
+    "description": "Creamy tuna salad with crunchy celery served on whole wheat bread.",
+    "prep_time": 10,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Drain canned tuna in oil and mash in a bowl.", "Mix with mayonnaise, diced celery, diced red onions, and dijon mustard.", "Season with fine table salt and ground black pepper.", "Spread evenly between slices of whole wheat bread."],
+    "ingredients": [
+      { "name": "canned tuna in oil", "amount": 200, "unit": "g" },
+      { "name": "mayonnaise", "amount": 45, "unit": "g" },
+      { "name": "celery", "amount": 2, "unit": "stalk" },
+      { "name": "red onions", "amount": 1, "unit": "qty" },
+      { "name": "dijon mustard", "amount": 10, "unit": "g" },
+      { "name": "whole wheat bread", "amount": 4, "unit": "qty" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" },
+      { "name": "ground black pepper", "amount": 1, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Garlic Butter Mashed Potatoes",
+    "description": "Smooth and fluffy mashed russet potatoes made with rich cream and butter.",
+    "prep_time": 15,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Peel and boil russet potatoes in salted water until tender.", "Drain potatoes and mash until smooth.", "Fold in salted butter, heavy cream, garlic powder, fine table salt, and ground black pepper until creamy."],
+    "ingredients": [
+      { "name": "russet potatoes", "amount": 800, "unit": "g" },
+      { "name": "salted butter", "amount": 60, "unit": "g" },
+      { "name": "heavy cream", "amount": 80, "unit": "ml" },
+      { "name": "garlic powder", "amount": 5, "unit": "g" },
+      { "name": "fine table salt", "amount": 5, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Homemade Chicken Vegetable Soup",
+    "description": "Nourishing soup packed with chicken breast, carrots, celery, and chicken broth.",
+    "prep_time": 15,
+    "cook_time": 30,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Sauté diced yellow onions, carrots, and celery in extra virgin olive oil.", "Add minced garlic and cook for 1 minute.", "Pour in chicken broth and add cubed chicken breast along with dried thyme.", "Simmer for 25 minutes, seasoning with fine table salt and ground black pepper."],
+    "ingredients": [
+      { "name": "chicken breast", "amount": 350, "unit": "g" },
+      { "name": "chicken broth", "amount": 1000, "unit": "ml" },
+      { "name": "carrots", "amount": 150, "unit": "g" },
+      { "name": "celery", "amount": 2, "unit": "stalk" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "dried thyme", "amount": 4, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 15, "unit": "ml" },
+      { "name": "fine table salt", "amount": 4, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Turkey & Mozzarella Quesadilla",
+    "description": "Crispy pan-grilled flour tortillas stuffed with turkey breast and mozzarella.",
+    "prep_time": 5,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Place sliced turkey breast slices and shredded mozzarella on flour tortillas.", "Top with chopped green onions and fold in half.", "Cook on a dry skillet over medium heat until golden and cheese is melted.", "Slice into triangles and serve with sour cream."],
+    "ingredients": [
+      { "name": "flour tortillas", "amount": 4, "unit": "qty" },
+      { "name": "turkey breast slices", "amount": 150, "unit": "g" },
+      { "name": "shredded mozzarella", "amount": 120, "unit": "g" },
+      { "name": "green onions", "amount": 1, "unit": "bunch" },
+      { "name": "sour cream", "amount": 60, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Roasted Garlic Parmesan Broccoli",
+    "description": "Oven-roasted broccoli florets tossed with red pepper flakes and parmesan.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Preheat oven to 200°C.", "Toss broccoli florets with extra virgin olive oil, minced garlic, red pepper flakes, and fine table salt.", "Spread on baking tray and roast for 18-20 minutes.", "Sprinkle parmesan cheese over hot broccoli before serving."],
+    "ingredients": [
+      { "name": "broccoli", "amount": 400, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 30, "unit": "ml" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "red pepper flakes", "amount": 2, "unit": "g" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "parmesan cheese", "amount": 40, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Mushroom Basmati Rice Pilaf",
+    "description": "Fragrant basmati rice simmered with sliced button mushrooms and garlic butter.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Melt unsalted butter with extra virgin olive oil and sauté sliced button mushrooms and yellow onions.", "Add garlic and basmati rice, stirring for 2 minutes.", "Pour in vegetable broth, cover, and cook on low heat for 15 minutes.", "Fluff with a fork and mix in parmesan cheese."],
+    "ingredients": [
+      { "name": "basmati rice", "amount": 250, "unit": "g" },
+      { "name": "button mushrooms", "amount": 200, "unit": "g" },
+      { "name": "vegetable broth", "amount": 500, "unit": "ml" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "unsalted butter", "amount": 25, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 15, "unit": "ml" },
+      { "name": "parmesan cheese", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Rich Chocolate Milkshake",
+    "description": "Decadent blended milkshake made with cocoa powder, vanilla ice cream, and dark chocolate.",
+    "prep_time": 5,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Combine vanilla ice cream, unsweetened cocoa powder, and whole milk in a blender.", "Blend on high until smooth and thick.", "Grate dark chocolate bar on top as garnish."],
+    "ingredients": [
+      { "name": "vanilla ice cream", "amount": 300, "unit": "g" },
+      { "name": "unsweetened cocoa powder", "amount": 25, "unit": "g" },
+      { "name": "whole milk", "amount": 200, "unit": "ml" },
+      { "name": "dark chocolate bar", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Honey Glazed Carrots",
+    "description": "Tender carrots tossed in a sweet butter and pure honey glaze.",
+    "prep_time": 10,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Slice carrots diagonally into coins.", "Melt unsalted butter in a skillet over medium heat.", "Add carrots, pure honey, and fine table salt.", "Cover and cook for 12 minutes until carrots are tender, then garnish with chopped fresh flat-leaf parsley."],
+    "ingredients": [
+      { "name": "carrots", "amount": 400, "unit": "g" },
+      { "name": "unsalted butter", "amount": 30, "unit": "g" },
+      { "name": "pure honey", "amount": 30, "unit": "ml" },
+      { "name": "fresh flat-leaf parsley", "amount": 1, "unit": "bunch" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Pork Sausage & Pepper Skillet",
+    "description": "Savory pork sausages pan-fried with colorful bell peppers and diced tomatoes.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Slice pork sausages and brown in extra virgin olive oil.", "Add sliced bell peppers, yellow onions, and minced garlic to the skillet.", "Stir in diced tomatoes and dried oregano.", "Simmer for 15 minutes until peppers are soft and sausages fully cooked."],
+    "ingredients": [
+      { "name": "pork sausages", "amount": 400, "unit": "g" },
+      { "name": "bell peppers", "amount": 2, "unit": "qty" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "diced tomatoes", "amount": 200, "unit": "g" },
+      { "name": "dried oregano", "amount": 4, "unit": "g" },
+      { "name": "extra virgin olive oil", "amount": 15, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Spinach & Feta Breakfast Omelet",
+    "description": "Fluffy egg omelet folded around fresh spinach and salty feta cheese.",
+    "prep_time": 5,
+    "cook_time": 8,
+    "difficulty": "Easy",
+    "servings": 1,
+    "steps": ["Whisk large eggs with fine table salt and ground black pepper.", "Melt unsalted butter in a non-stick pan.", "Pour eggs and allow to set slightly, then top half with fresh spinach and crumbled feta cheese.", "Fold omelet over and cook until cheese is warm."],
+    "ingredients": [
+      { "name": "large eggs", "amount": 3, "unit": "qty" },
+      { "name": "fresh spinach", "amount": 50, "unit": "g" },
+      { "name": "feta cheese", "amount": 40, "unit": "g" },
+      { "name": "unsalted butter", "amount": 15, "unit": "g" },
+      { "name": "fine table salt", "amount": 1, "unit": "g" },
+      { "name": "ground black pepper", "amount": 1, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Sesame Ginger Turkey Rice Bowl",
+    "description": "Lean ground turkey sautéed with ginger, garlic, and soy sauce over brown rice.",
+    "prep_time": 10,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Cook ground turkey in sesame oil until brown.", "Add minced garlic, fresh ginger, and soy sauce, cooking for 3 minutes.", "Stir in chopped green onions.", "Serve over hot cooked brown rice."],
+    "ingredients": [
+      { "name": "ground turkey", "amount": 400, "unit": "g" },
+      { "name": "soy sauce", "amount": 30, "unit": "ml" },
+      { "name": "fresh ginger", "amount": 10, "unit": "g" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "green onions", "amount": 1, "unit": "bunch" },
+      { "name": "sesame oil", "amount": 15, "unit": "ml" },
+      { "name": "brown rice", "amount": 250, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Strawberry Yogurt Smoothie",
+    "description": "Refreshing blend of ripe strawberries, greek yogurt, milk, and maple syrup.",
+    "prep_time": 5,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Place strawberries, greek yogurt, whole milk, maple syrup, and vanilla extract into blender.", "Blend until completely smooth.", "Pour into chilled glasses."],
+    "ingredients": [
+      { "name": "strawberries", "amount": 200, "unit": "g" },
+      { "name": "greek yogurt", "amount": 150, "unit": "g" },
+      { "name": "whole milk", "amount": 200, "unit": "ml" },
+      { "name": "maple syrup", "amount": 20, "unit": "ml" },
+      { "name": "vanilla extract", "amount": 3, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Classic BLT Sandwich",
+    "description": "Crispy bacon strips, ripe tomatoes, and mayonnaise stacked on toasted bread.",
+    "prep_time": 5,
+    "cook_time": 8,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Fry bacon strips until extra crispy.", "Toast sandwich bread slices.", "Spread mayonnaise onto toasted bread slices.", "Layer with bacon strips and tomato slices, season with fine table salt and ground black pepper, then close sandwich."],
+    "ingredients": [
+      { "name": "sandwich bread", "amount": 4, "unit": "qty" },
+      { "name": "bacon strips", "amount": 6, "unit": "qty" },
+      { "name": "tomatoes", "amount": 150, "unit": "g" },
+      { "name": "mayonnaise", "amount": 30, "unit": "g" },
+      { "name": "fine table salt", "amount": 1, "unit": "g" },
+      { "name": "ground black pepper", "amount": 1, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Garlic Parmesan Toast",
+    "description": "Crispy toasted bread brushed with garlic butter and topped with dried oregano.",
+    "prep_time": 5,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Mix softened unsalted butter with minced garlic, dried oregano, and parmesan cheese.", "Spread mixture evenly on sandwich bread slices.", "Bake at 200°C for 8-10 minutes until golden and crispy."],
+    "ingredients": [
+      { "name": "sandwich bread", "amount": 4, "unit": "qty" },
+      { "name": "unsalted butter", "amount": 50, "unit": "g" },
+      { "name": "garlic", "amount": 3, "unit": "cloves" },
+      { "name": "dried oregano", "amount": 4, "unit": "g" },
+      { "name": "parmesan cheese", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Cottage Cheese & Berry Toast",
+    "description": "Toasted whole wheat bread topped with fresh cottage cheese, sliced strawberries, and honey.",
+    "prep_time": 5,
+    "cook_time": 2,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Toast whole wheat bread slices.", "Spread cottage cheese generously over each toast.", "Arrange sliced fresh strawberries on top.", "Drizzle with pure honey."],
+    "ingredients": [
+      { "name": "whole wheat bread", "amount": 2, "unit": "qty" },
+      { "name": "cottage cheese", "amount": 150, "unit": "g" },
+      { "name": "strawberries", "amount": 100, "unit": "g" },
+      { "name": "pure honey", "amount": 15, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Cinnamon Baked Apples",
+    "description": "Warm tender apples baked with brown sugar, butter, cinnamon, and walnuts.",
+    "prep_time": 10,
+    "cook_time": 30,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Preheat oven to 190°C.", "Core apples and stand upright in a baking dish.", "Mix brown sugar, ground cinnamon, softened unsalted butter, and chopped walnut halves.", "Spoon mixture into the center of each apple and bake for 30 minutes."],
+    "ingredients": [
+      { "name": "apples", "amount": 4, "unit": "qty" },
+      { "name": "brown sugar", "amount": 50, "unit": "g" },
+      { "name": "ground cinnamon", "amount": 5, "unit": "g" },
+      { "name": "unsalted butter", "amount": 30, "unit": "g" },
+      { "name": "walnut halves", "amount": 40, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Cheesy Marinara Pasta Bake",
+    "description": "Baked penne pasta layered with marinara sauce, ricotta, and melted mozzarella.",
+    "prep_time": 10,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 4,
+    "steps": ["Boil penne pasta until al dente.", "Mix pasta with marinara pasta sauce, ricotta cheese, and dried oregano.", "Transfer to a baking dish and cover with shredded mozzarella.", "Bake at 200°C for 20 minutes until bubbly and golden."],
+    "ingredients": [
+      { "name": "penne pasta", "amount": 350, "unit": "g" },
+      { "name": "marinara pasta sauce", "amount": 400, "unit": "ml" },
+      { "name": "shredded mozzarella", "amount": 150, "unit": "g" },
+      { "name": "ricotta cheese", "amount": 100, "unit": "g" },
+      { "name": "dried oregano", "amount": 5, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Quick Black Bean Soup",
+    "description": "Hearty black bean soup flavored with garlic, cumin, lime juice, and sour cream.",
+    "prep_time": 10,
+    "cook_time": 15,
+    "difficulty": "Easy",
+    "servings": 3,
+    "steps": ["Sauté yellow onions and minced garlic in vegetable broth.", "Add canned black beans and ground cumin, then simmer for 10 minutes.", "Blend half the soup for a thicker texture, then stir back in.", "Finish with fresh lime juice and serve with a dollop of sour cream."],
+    "ingredients": [
+      { "name": "canned black beans", "amount": 800, "unit": "g" },
+      { "name": "vegetable broth", "amount": 400, "unit": "ml" },
+      { "name": "yellow onions", "amount": 1, "unit": "qty" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "ground cumin", "amount": 5, "unit": "g" },
+      { "name": "limes", "amount": 1, "unit": "qty" },
+      { "name": "sour cream", "amount": 60, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Loaded Baked Potato",
+    "description": "Oven-baked russet potato packed with cheddar, sour cream, bacon, and green onions.",
+    "prep_time": 5,
+    "cook_time": 50,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Prick russet potatoes with a fork and bake at 200°C for 50 minutes.", "Slice potatoes open down the center and fluff the inside.", "Fill with shredded cheddar cheese block, crispy bacon strips, sour cream, and green onions.", "Season with fine table salt."],
+    "ingredients": [
+      { "name": "russet potatoes", "amount": 2, "unit": "qty" },
+      { "name": "bacon strips", "amount": 4, "unit": "qty" },
+      { "name": "cheddar cheese block", "amount": 80, "unit": "g" },
+      { "name": "sour cream", "amount": 60, "unit": "g" },
+      { "name": "green onions", "amount": 1, "unit": "bunch" },
+      { "name": "fine table salt", "amount": 2, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Creamy Mushroom Chicken Thighs",
+    "description": "Tender chicken thighs in a rich mushroom, heavy cream, and thyme sauce.",
+    "prep_time": 10,
+    "cook_time": 25,
+    "difficulty": "Medium",
+    "servings": 4,
+    "steps": ["Sear chicken thighs in unsalted butter until browned on both sides; remove.", "In the same pan, sauté button mushrooms and garlic.", "Pour in chicken broth, heavy cream, and dried thyme.", "Return chicken thighs to pan and simmer for 15 minutes until sauce thickens."],
+    "ingredients": [
+      { "name": "chicken thighs", "amount": 600, "unit": "g" },
+      { "name": "button mushrooms", "amount": 200, "unit": "g" },
+      { "name": "heavy cream", "amount": 150, "unit": "ml" },
+      { "name": "chicken broth", "amount": 100, "unit": "ml" },
+      { "name": "garlic", "amount": 2, "unit": "cloves" },
+      { "name": "unsalted butter", "amount": 25, "unit": "g" },
+      { "name": "dried thyme", "amount": 4, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Crispy Zucchini Fritters",
+    "description": "Pan-fried shredded zucchini fritters seasoned with green onions and pepper.",
+    "prep_time": 15,
+    "cook_time": 10,
+    "difficulty": "Medium",
+    "servings": 3,
+    "steps": ["Shred zucchini, sprinkle salt, and squeeze out excess moisture.", "Mix zucchini with large eggs, all-purpose flour, chopped green onions, and ground black pepper.", "Heat vegetable oil in a pan, drop spoonfuls of batter, and flatten slightly.", "Fry 3-4 minutes per side until golden brown."],
+    "ingredients": [
+      { "name": "zucchini", "amount": 400, "unit": "g" },
+      { "name": "large eggs", "amount": 2, "unit": "qty" },
+      { "name": "all-purpose flour", "amount": 60, "unit": "g" },
+      { "name": "green onions", "amount": 1, "unit": "bunch" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "ground black pepper", "amount": 2, "unit": "g" },
+      { "name": "vegetable oil", "amount": 30, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Lemon Herb Baked Cod Parcels",
+    "description": "Cod fillets baked with sliced zucchini, bell peppers, and lemon herbs.",
+    "prep_time": 15,
+    "cook_time": 20,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Preheat oven to 200°C.", "Lay cod / white fish fillets on parchment paper along with sliced zucchini and bell peppers.", "Drizzle with extra virgin olive oil and lemon juice, season with dried thyme and fine table salt.", "Fold paper parcels tightly and bake for 20 minutes."],
+    "ingredients": [
+      { "name": "cod / white fish fillets", "amount": 350, "unit": "g" },
+      { "name": "zucchini", "amount": 150, "unit": "g" },
+      { "name": "bell peppers", "amount": 1, "unit": "qty" },
+      { "name": "extra virgin olive oil", "amount": 20, "unit": "ml" },
+      { "name": "lemons", "amount": 1, "unit": "qty" },
+      { "name": "fine table salt", "amount": 3, "unit": "g" },
+      { "name": "dried thyme", "amount": 3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Vanilla Cream Iced Coffee",
+    "description": "Smooth cold iced coffee sweetened with sugar and splash of half-and-half.",
+    "prep_time": 5,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Brew whole coffee beans with bottled water and allow to cool.", "Fill glasses with ice cubes and pour chilled coffee over ice.", "Stir in white sugar until dissolved.", "Top with half-and-half cream."],
+    "ingredients": [
+      { "name": "whole coffee beans", "amount": 30, "unit": "g" },
+      { "name": "bottled water", "amount": 400, "unit": "ml" },
+      { "name": "half-and-half", "amount": 60, "unit": "ml" },
+      { "name": "white sugar", "amount": 20, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Croissant Breakfast Sandwich",
+    "description": "Warm butter croissants filled with fried egg, cheddar cheese, and bacon.",
+    "prep_time": 5,
+    "cook_time": 10,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Slice butter croissants in half and warm in oven.", "Fry bacon strips in a skillet until crispy.", "Fry large eggs in salted butter to desired doneness.", "Layer bacon, fried egg, and cheddar cheese block slices inside croissants."],
+    "ingredients": [
+      { "name": "butter croissants", "amount": 2, "unit": "qty" },
+      { "name": "large eggs", "amount": 2, "unit": "qty" },
+      { "name": "cheddar cheese block", "amount": 40, "unit": "g" },
+      { "name": "bacon strips", "amount": 4, "unit": "qty" },
+      { "name": "salted butter", "amount": 10, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Creamy Chocolate Avocado Pudding",
+    "description": "Velvety healthy chocolate pudding made with avocados, cocoa, and maple syrup.",
+    "prep_time": 10,
+    "cook_time": 0,
+    "difficulty": "Easy",
+    "servings": 2,
+    "steps": ["Scoop avocados into a food processor.", "Add unsweetened cocoa powder, maple syrup, vanilla extract, and coconut milk.", "Blend on high until completely smooth and creamy.", "Chill in refrigerator for 30 minutes before serving."],
+    "ingredients": [
+      { "name": "avocados", "amount": 2, "unit": "qty" },
+      { "name": "unsweetened cocoa powder", "amount": 40, "unit": "g" },
+      { "name": "maple syrup", "amount": 60, "unit": "ml" },
+      { "name": "vanilla extract", "amount": 5, "unit": "ml" },
+      { "name": "coconut milk", "amount": 60, "unit": "ml" }
+    ]
+  }
+]
