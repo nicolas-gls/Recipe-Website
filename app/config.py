@@ -1,6 +1,10 @@
-import os
+from pathlib import Path
 
-PORT = int(os.getenv("PORT", "8000"))
-DATA_DIR = os.getenv("DATA_DIR", "data")
-DB_PATH = os.path.join(DATA_DIR, "app.db")
-CSV_PATH = os.path.join(DATA_DIR, "supermarket_products.csv")
+# Base directories
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+
+# Paths
+CSV_PATH = DATA_DIR / "supermarket_products.csv"
+JSON_PATH = DATA_DIR / "recipes.json"
+DB_PATH = DATA_DIR / "app.db"
