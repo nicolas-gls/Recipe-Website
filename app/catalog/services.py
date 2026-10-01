@@ -15,15 +15,22 @@ def scale_ingredient_amount(
 
 
 def list_recipes(search_query: Optional[str] = None) -> List[RecipeSummary]:
-    """Retrieves all recipes from the database with optional search filtering."""
+    """Retrieves recipes from the database, filtering by recipe title OR ingredient name."""
     conn = get_connection()
     cursor = conn.cursor()
 
     if search_query:
-        query = "SELECT id, name, description, prep_time, cook_time, difficulty, servings FROM recipes WHERE name LIKE ?"
-        cursor.execute(query, (f"%{search_query.strip()}%",))
+        query = """
+            SELECT DISTINCT r.id, r.name, r.description, r.prep_time, r.cook_time, r.difficulty, r.servings, r.image_url
+            FROM recipes r
+            LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+            LEFT JOIN ingredients i ON ri.ingredient_id = i.id
+            WHERE r.name LIKE ? OR i.name LIKE ?
+        """
+        term = f"%{search_query.strip()}%"
+        cursor.execute(query, (term, term))
     else:
-        query = "SELECT id, name, description, prep_time, cook_time, difficulty, servings FROM recipes"
+        query = "SELECT id, name, description, prep_time, cook_time, difficulty, servings, image_url FROM recipes"
         cursor.execute(query)
 
     rows = cursor.fetchall()
@@ -38,6 +45,8 @@ def list_recipes(search_query: Optional[str] = None) -> List[RecipeSummary]:
             cook_time=row["cook_time"],
             difficulty=row["difficulty"],
             servings=row["servings"],
+            image_url=row["image_url"]
+            or f"https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
         )
         for row in rows
     ]
@@ -51,7 +60,7 @@ def get_recipe_by_id(
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT id, name, description, prep_time, cook_time, difficulty, servings, steps FROM recipes WHERE id = ?",
+        "SELECT id, name, description, prep_time, cook_time, difficulty, servings, steps, image_url FROM recipes WHERE id = ?",
         (recipe_id,),
     )
     recipe_row = cursor.fetchone()
@@ -105,4 +114,6 @@ def get_recipe_by_id(
         servings=effective_servings,
         steps=steps_list,
         ingredients=ingredients,
+        image_url=recipe_row["image_url"]
+        or f"https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
     )

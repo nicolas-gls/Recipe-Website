@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% block title %}Recipe Catalog{% endblock %} {% block content %}
+<h1>Recipe Catalog</h1>
+
+<form method="get" action="/" class="search-form">
+  <input type="text" name="q" value="{{ search_query }}" placeholder="Search by recipe title or ingredient (e.g. garlic, chicken, pasta)..." class="search-input" />
+  <button type="submit" class="btn">Search</button>
+</form>
+
+<div class="recipe-grid">
+  {% for recipe in recipes %}
+  <div class="recipe-card">
+    <img src="{{ recipe.image_url }}" alt="{{ recipe.name }}" class="recipe-image" />
+    <div class="card-content">
+      <h3>{{ recipe.name }}</h3>
+      <p>{{ recipe.description or 'Delicious homemade recipe.' }}</p>
+      <div class="recipe-meta">
+        <span>⏱️ {{ recipe.prep_time + recipe.cook_time }} mins</span>
+        <span>📊 {{ recipe.difficulty }}</span>
+        <span>👥 {{ recipe.servings }} servings</span>
+      </div>
+      <div class="card-actions">
+        <a href="/recipes/{{ recipe.id }}" class="btn-secondary">View Recipe</a>
+        <button onclick="addToList({{ recipe.id }}, {{ recipe.servings }})" class="btn">Add to List</button>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p>No recipes found matching your search query.</p>
+  {% endfor %}
+</div>
+
+<script>
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem('recipe_cart') || '[]')
+    } catch (e) {
+      return []
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem('recipe_cart', JSON.stringify(cart))
+    updateNavShoppingLinks()
+  }
+
+  function updateNavShoppingLinks() {
+    const cart = getCart()
+    if (cart.length > 0) {
+      const params = new URLSearchParams()
+      cart.forEach((item) => params.append('r', `${item.id}:${item.servings}`))
+      const targetUrl = `/shopping?${params.toString()}`
+      document.querySelectorAll('a[href^="/shopping"]').forEach((link) => {
+        link.href = targetUrl
+      })
+    }
+  }
+
+  function addToList(recipeId, defaultServings) {
+    const servingsStr = prompt('How many servings would you like to prepare?', defaultServings)
+    if (servingsStr !== null) {
+      const servings = parseInt(servingsStr, 10)
+      if (!isNaN(servings) && servings > 0) {
+        let cart = getCart()
+        const existingIdx = cart.findIndex((item) => item.id === recipeId)
+        if (existingIdx >= 0) {
+          cart[existingIdx].servings = servings
+        } else {
+          cart.push({ id: recipeId, servings: servings })
+        }
+        saveCart(cart)
+        alert('Recipe added to your shopping list!')
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', updateNavShoppingLinks)
+</script>
+{% endblock %}

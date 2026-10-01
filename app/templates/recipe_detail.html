@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block title %}{{ recipe.name }}{% endblock %} {% block content %}
+<a href="/" class="btn-secondary">&larr; Back to Catalog</a>
+
+<div class="recipe-detail-header" style="margin-top: 1.5rem; display: flex; gap: 2rem; align-items: center">
+  <img src="{{ recipe.image_url }}" alt="{{ recipe.name }}" style="width: 280px; height: 200px; object-fit: cover; border-radius: 8px" />
+  <div>
+    <h1>{{ recipe.name }}</h1>
+    <p>{{ recipe.description }}</p>
+
+    <!-- Servings Scaler Form -->
+    <form method="get" action="/recipes/{{ recipe.id }}" style="display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem">
+      <label for="servings"><strong>Target Servings:</strong></label>
+      <input type="number" id="servings" name="servings" value="{{ recipe.servings }}" min="1" max="50" style="padding: 0.4rem; width: 80px" />
+      <button type="submit" class="btn-secondary">Scale Ingredients</button>
+    </form>
+
+    <!-- Image Upload Form -->
+    <form action="/recipes/{{ recipe.id }}/upload-image" method="post" enctype="multipart/form-data" style="margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center">
+      <label for="image"><strong>Upload Custom Image:</strong></label>
+      <input type="file" id="image" name="image" accept="image/*" required style="font-size: 0.85rem" />
+      <button type="submit" class="btn-secondary">Upload</button>
+    </form>
+  </div>
+</div>
+
+<div class="recipe-body">
+  <div class="ingredients-section">
+    <h2>Ingredients</h2>
+    <ul class="ingredient-list">
+      {% for ing in recipe.ingredients %}
+      <li><strong>{{ ing.amount }} {{ ing.unit }}</strong> {{ ing.name }}</li>
+      {% endfor %}
+    </ul>
+    <br />
+    <!-- Updated button to accumulate recipes in cart -->
+    <button type="button" onclick="addCurrentRecipeToList({{ recipe.id }})" class="btn">Add to Shopping List</button>
+  </div>
+
+  <div class="steps-section">
+    <h2>Preparation Steps</h2>
+    <ol class="steps-list">
+      {% for step in recipe.steps %}
+      <li>{{ step }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+</div>
+
+<script>
+  function addCurrentRecipeToList(recipeId) {
+      const servingsInput = document.getElementById('servings');
+      const servings = servingsInput ? parseInt(servingsInput.value, 10) : {{ recipe.servings }};
+
+      let cart = [];
+      try {
+          cart = JSON.parse(localStorage.getItem('recipe_cart') || '[]');
+      } catch (e) {
+          cart = [];
+      }
+
+      const idx = cart.findIndex(item => item.id === recipeId);
+      if (idx >= 0) {
+          cart[idx].servings = servings;
+      } else {
+          cart.push({ id: recipeId, servings: servings });
+      }
+
+      localStorage.setItem('recipe_cart', JSON.stringify(cart));
+
+      const params = new URLSearchParams();
+      cart.forEach(item => params.append('r', `${item.id}:${item.servings}`));
+      window.location.href = `/shopping?${params.toString()}`;
+  }
+</script>
+{% endblock %}

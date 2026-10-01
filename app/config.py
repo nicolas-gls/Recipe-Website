@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Base directories
@@ -8,3 +9,5 @@ DATA_DIR = BASE_DIR / "data"
 CSV_PATH = DATA_DIR / "supermarket_products.csv"
 JSON_PATH = DATA_DIR / "recipes.json"
 DB_PATH = DATA_DIR / "app.db"
+
+PORT = int(os.getenv("PORT", 8000))
