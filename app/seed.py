@@ -2,8 +2,12 @@ import csv
 import json
 import re
 import sqlite3
+from pathlib import Path
 from app.config import DB_PATH, CSV_PATH, JSON_PATH
-from app.database import init_db, get_connection
+from app.database import init_db, reset_db, get_connection
+
+BASE_DIR = Path(__file__).resolve().parent
+UPLOAD_DIR = BASE_DIR / "static" / "uploads"
 
 
 def parse_amount(amt_str: str):
@@ -19,9 +23,27 @@ def parse_amount(amt_str: str):
     return None, None
 
 
+def resolve_image_url(recipe_data: dict, recipe_index: int) -> str:
+    # 1. Explicit image_url in JSON if present
+    if recipe_data.get("image_url"):
+        return recipe_data["image_url"]
+
+    # 2. Check disk for existing uploaded image regardless of extension (.jpg, .jpeg, .png, .webp)
+    if UPLOAD_DIR.exists():
+        matching_files = list(UPLOAD_DIR.glob(f"recipe_{recipe_index}.*"))
+        if matching_files:
+            filename = matching_files[0].name
+            return f"/static/uploads/{filename}"
+
+    # 3. Fallback image for new recipes without uploads
+    return "https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80"
+
+
 def seed_database():
-    # 1. Reset and initialize database schema
+    # 1. Reset existing tables and initialize fresh database schema
+    reset_db()
     init_db()
+
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -72,12 +94,13 @@ def seed_database():
     with open(JSON_PATH, mode="r", encoding="utf-8") as file:
         recipes_data = json.load(file)
 
-    for recipe in recipes_data:
+    for idx, recipe in enumerate(recipes_data, start=1):
+        image_url = resolve_image_url(recipe, idx)
         steps_json = json.dumps(recipe["steps"])
         cursor.execute(
             """
-            INSERT INTO recipes (name, description, prep_time, cook_time, difficulty, servings, steps)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO recipes (name, description, prep_time, cook_time, difficulty, servings, steps, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 recipe["name"],
@@ -87,6 +110,7 @@ def seed_database():
                 recipe["difficulty"],
                 recipe["servings"],
                 steps_json,
+                image_url,
             ),
         )
         recipe_id = cursor.lastrowid

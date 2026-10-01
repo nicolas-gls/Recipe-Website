@@ -51,8 +51,8 @@
       {% for item in shopping_data.items %}
       <tr>
         <td>{{ item.category or 'General' }}</td>
-        <td><strong>{{ item.ingredient_name }}</strong></td>
-        <td>{{ item.total_amount }} {{ item.unit }}</td>
+        <td><strong>{{ item.ingredient_name|title }}</strong></td>
+        <td>{{ item.total_amount|format_amount }} {{ item.unit|format_unit }}</td>
         <td>{{ item.suggested_product_name or 'N/A' }}</td>
         <td>{{ item.packages_needed }}</td>
         <td>${{ "%.2f"|format(item.estimated_price) }}</td>

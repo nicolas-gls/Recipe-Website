@@ -15,16 +15,11 @@ get_db_connection = get_connection
 
 
 def init_db():
-    """Initializes the database schema with the 4 required tables."""
+    """Ensures database tables exist without dropping existing data."""
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.executescript("""
-    DROP TABLE IF EXISTS recipe_ingredients;
-    DROP TABLE IF EXISTS supermarket_products;
-    DROP TABLE IF EXISTS recipes;
-    DROP TABLE IF EXISTS ingredients;
-
     -- 1. Recipes catalog
     CREATE TABLE IF NOT EXISTS recipes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,6 +67,22 @@ def init_db():
     conn.close()
 
 
+def reset_db():
+    """Completely drops all tables for a clean slate (used by test fixtures or explicit reseeding)."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.executescript("""
+    DROP TABLE IF EXISTS recipe_ingredients;
+    DROP TABLE IF EXISTS supermarket_products;
+    DROP TABLE IF EXISTS recipes;
+    DROP TABLE IF EXISTS ingredients;
+    """)
+
+    conn.commit()
+    conn.close()
+
+
 if __name__ == "__main__":
     init_db()
-    print("Database schema successfully initialized.")
+    print("Database schema successfully verified/initialized.")
