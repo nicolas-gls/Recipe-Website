@@ -3,7 +3,7 @@ from app.config import DB_PATH
 
 
 def get_connection():
-    """Returns a SQLite connection with foreign key support enabled."""
+    """Returns a SQLite connection with foreign key support and dict-like row access enabled."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
@@ -34,13 +34,14 @@ def init_db():
         cook_time INTEGER,
         difficulty TEXT,
         servings INTEGER,
-        steps TEXT -- Stored as JSON string array
+        steps TEXT, -- Stored as JSON string array
+        image_url TEXT
     );
 
     -- 2. Master list of standardized ingredients
     CREATE TABLE IF NOT EXISTS ingredients (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE, -- Clean, lowercase string
+        name TEXT NOT NULL UNIQUE,
         category TEXT
     );
 

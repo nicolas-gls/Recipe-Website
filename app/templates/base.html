@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Recipe & Shopping App{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        const cart = JSON.parse(localStorage.getItem('recipe_cart') || '[]')
+        if (cart.length > 0) {
+          const params = new URLSearchParams()
+          cart.forEach((item) => params.append('r', `${item.id}:${item.servings}`))
+          const shoppingUrl = `/shopping?${params.toString()}`
+          document.querySelectorAll('a[href="/shopping"]').forEach((link) => {
+            link.href = shoppingUrl
+          })
+        }
+      } catch (e) {}
+    })
+  </script>
+
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="brand">🍽️ Recipe Hub</a>
+        <div class="nav-links">
+          <a href="/">Recipes Catalog</a>
+          <a href="/shopping">Shopping List</a>
+        </div>
+      </div>
+    </nav>
+    <main class="container">{% block content %}{% endblock %}</main>
+  </body>
+</html>

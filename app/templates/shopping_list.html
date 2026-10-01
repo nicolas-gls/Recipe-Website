@@ -1,0 +1,151 @@
+{% extends "base.html" %} {% block title %}Shopping List{% endblock %} {% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+  <h1>Shopping List</h1>
+  <a href="/" class="btn-secondary">+ Add More Recipes from Catalog</a>
+</div>
+
+{% if cart_recipes %}
+<!-- SECTION 1: SELECTED RECIPES IN CART -->
+<div style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 2rem">
+  <h2>1. Selected Recipes in Cart</h2>
+  <table class="shopping-table">
+    <thead>
+      <tr>
+        <th>Recipe Name</th>
+        <th>Servings</th>
+        <th style="text-align: right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for recipe in cart_recipes %}
+      <tr>
+        <td><strong>{{ recipe.name }}</strong></td>
+        <td>
+          <input type="number" id="servings-{{ recipe.id }}" value="{{ recipe.servings }}" min="1" max="50" style="width: 70px; padding: 0.3rem" />
+          <button onclick="updateServings({{ recipe.id }})" class="btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem">Update</button>
+        </td>
+        <td style="text-align: right">
+          <button onclick="removeFromCart({{ recipe.id }})" class="btn-secondary" style="color: #c62828; border-color: #ef9a9a">Remove</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 2: AGGREGATED PRODUCTS TO BUY -->
+<div style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color)">
+  <h2>2. Required Supermarket Products</h2>
+  <table class="shopping-table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Ingredient</th>
+        <th>Total Needed</th>
+        <th>Suggested Product</th>
+        <th>Packages</th>
+        <th>Est. Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in shopping_data.items %}
+      <tr>
+        <td>{{ item.category or 'General' }}</td>
+        <td><strong>{{ item.ingredient_name }}</strong></td>
+        <td>{{ item.total_amount }} {{ item.unit }}</td>
+        <td>{{ item.suggested_product_name or 'N/A' }}</td>
+        <td>{{ item.packages_needed }}</td>
+        <td>${{ "%.2f"|format(item.estimated_price) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="total-box">
+    <h3>Total Estimated Checkout Cost: <span>${{ "%.2f"|format(shopping_data.total_estimated_cost) }}</span></h3>
+  </div>
+
+  <div style="margin-top: 1rem; text-align: right">
+    <button onclick="clearCart()" class="btn-secondary" style="color: #c62828">Clear Entire Cart</button>
+  </div>
+</div>
+
+{% else %}
+<div style="background: white; padding: 2rem; border-radius: 8px; text-align: center; border: 1px solid #e0e0e0">
+  <p style="font-size: 1.1rem; color: #666">Your shopping list is currently empty.</p>
+  <a href="/" class="btn" style="margin-top: 1rem; display: inline-block">Browse Catalog & Add Recipes</a>
+</div>
+{% endif %}
+
+<script>
+  // Auto-restore cart on direct /shopping page visits
+  ;(function syncShoppingState() {
+    const urlParams = new URLSearchParams(window.location.search)
+    const rParams = urlParams.getAll('r')
+
+    if (rParams.length === 0) {
+      try {
+        const stored = JSON.parse(localStorage.getItem('recipe_cart') || '[]')
+        if (stored.length > 0) {
+          const params = new URLSearchParams()
+          stored.forEach((item) => params.append('r', `${item.id}:${item.servings}`))
+          window.location.replace(`/shopping?${params.toString()}`)
+          return
+        }
+      } catch (e) {}
+    } else {
+      let cart = []
+      rParams.forEach((item) => {
+        if (item.includes(':')) {
+          const [id, servings] = item.split(':')
+          cart.push({ id: parseInt(id, 10), servings: parseInt(servings, 10) })
+        }
+      })
+      localStorage.setItem('recipe_cart', JSON.stringify(cart))
+    }
+  })()
+
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem('recipe_cart') || '[]')
+    } catch (e) {
+      return []
+    }
+  }
+
+  function saveAndRedirect(cart) {
+    localStorage.setItem('recipe_cart', JSON.stringify(cart))
+    if (cart.length === 0) {
+      window.location.href = '/shopping'
+      return
+    }
+    const params = new URLSearchParams()
+    cart.forEach((item) => params.append('r', `${item.id}:${item.servings}`))
+    window.location.href = `/shopping?${params.toString()}`
+  }
+
+  function updateServings(recipeId) {
+    const input = document.getElementById(`servings-${recipeId}`)
+    if (!input) return
+    const newServings = parseInt(input.value, 10)
+    if (isNaN(newServings) || newServings <= 0) return
+
+    let cart = getCart()
+    const item = cart.find((i) => i.id === recipeId)
+    if (item) {
+      item.servings = newServings
+      saveAndRedirect(cart)
+    }
+  }
+
+  function removeFromCart(recipeId) {
+    let cart = getCart().filter((i) => i.id !== recipeId)
+    saveAndRedirect(cart)
+  }
+
+  function clearCart() {
+    localStorage.removeItem('recipe_cart')
+    window.location.href = '/shopping'
+  }
+</script>
+{% endblock %}

@@ -18,6 +18,7 @@ class RecipeSummary(BaseModel):
     cook_time: int
     difficulty: str
     servings: int
+    image_url: Optional[str] = None
 
 
 class RecipeDetail(RecipeSummary):
