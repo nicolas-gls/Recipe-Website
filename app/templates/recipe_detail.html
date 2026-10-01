@@ -1,75 +1,98 @@
 {% extends "base.html" %} {% block title %}{{ recipe.name }}{% endblock %} {% block content %}
-<a href="/" class="btn-secondary">&larr; Back to Catalog</a>
+<div class="recipe-detail-container" style="background: white; padding: 2rem; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 2rem">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap">
+    <div style="flex: 1; min-width: 300px">
+      <h1>{{ recipe.name }}</h1>
+      <p style="color: #666; font-size: 1.1rem; margin-bottom: 1.5rem">{{ recipe.description }}</p>
 
-<div class="recipe-detail-header" style="margin-top: 1.5rem; display: flex; gap: 2rem; align-items: center">
-  <img src="{{ recipe.image_url }}" alt="{{ recipe.name }}" style="width: 280px; height: 200px; object-fit: cover; border-radius: 8px" />
-  <div>
-    <h1>{{ recipe.name }}</h1>
-    <p>{{ recipe.description }}</p>
+      <div style="display: flex; gap: 1.5rem; background: #f8f9fa; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem">
+        <span><strong>Prep:</strong> {{ recipe.prep_time }} mins</span>
+        <span><strong>Cook:</strong> {{ recipe.cook_time }} mins</span>
+        <span><strong>Difficulty:</strong> {{ recipe.difficulty }}</span>
+      </div>
 
-    <!-- Servings Scaler Form -->
-    <form method="get" action="/recipes/{{ recipe.id }}" style="display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem">
-      <label for="servings"><strong>Target Servings:</strong></label>
-      <input type="number" id="servings" name="servings" value="{{ recipe.servings }}" min="1" max="50" style="padding: 0.4rem; width: 80px" />
-      <button type="submit" class="btn-secondary">Scale Ingredients</button>
-    </form>
+      <!-- Serving Scale Form -->
+      <form method="get" action="/recipes/{{ recipe.id }}" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem">
+        <label for="servings"><strong>Servings:</strong></label>
+        <input type="number" id="servings" name="servings" value="{{ recipe.servings }}" min="1" max="50" style="width: 70px; padding: 0.4rem; font-size: 0.95rem" />
+        <button type="submit" class="btn-secondary">Scale Recipe</button>
+      </form>
 
-    <!-- Image Upload Form -->
-    <form action="/recipes/{{ recipe.id }}/upload-image" method="post" enctype="multipart/form-data" style="margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center">
-      <label for="image"><strong>Upload Custom Image:</strong></label>
-      <input type="file" id="image" name="image" accept="image/*" required style="font-size: 0.85rem" />
-      <button type="submit" class="btn-secondary">Upload</button>
-    </form>
+      <!-- Edit Recipe Name Form -->
+      <form action="/recipes/{{ recipe.id }}/edit-name" method="post" style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; align-items: center">
+        <label for="recipe-name"><strong>Recipe Name:</strong></label>
+        <input type="text" id="recipe-name" name="name" value="{{ recipe.name }}" required style="padding: 0.4rem; font-size: 0.9rem; flex: 1" />
+        <button type="submit" class="btn-secondary">Save Name</button>
+      </form>
+
+      <!-- Image Upload Form -->
+      <form action="/recipes/{{ recipe.id }}/upload-image" method="post" enctype="multipart/form-data" style="margin-bottom: 1.5rem">
+        <label style="display: block; margin-bottom: 0.5rem"><strong>Upload Custom Image:</strong></label>
+        <div style="display: flex; gap: 0.5rem">
+          <input type="file" name="image" accept="image/*" required style="font-size: 0.9rem" />
+          <button type="submit" class="btn-secondary">Upload</button>
+        </div>
+      </form>
+
+      <button onclick="addCurrentRecipeToList({{ recipe.id }}, {{ recipe.servings }})" class="btn" style="width: 100%; margin-top: 0.5rem">Add to Shopping List</button>
+    </div>
+
+    <div style="flex: 1; min-width: 300px; text-align: center">
+      <img src="{{ recipe.image_url }}" alt="{{ recipe.name }}" style="width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px" />
+    </div>
   </div>
-</div>
 
-<div class="recipe-body">
-  <div class="ingredients-section">
-    <h2>Ingredients</h2>
-    <ul class="ingredient-list">
-      {% for ing in recipe.ingredients %}
-      <li><strong>{{ ing.amount }} {{ ing.unit }}</strong> {{ ing.name }}</li>
-      {% endfor %}
-    </ul>
-    <br />
-    <!-- Updated button to accumulate recipes in cart -->
-    <button type="button" onclick="addCurrentRecipeToList({{ recipe.id }})" class="btn">Add to Shopping List</button>
-  </div>
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eee" />
 
-  <div class="steps-section">
-    <h2>Preparation Steps</h2>
-    <ol class="steps-list">
-      {% for step in recipe.steps %}
-      <li>{{ step }}</li>
-      {% endfor %}
-    </ol>
+  <div style="display: flex; gap: 2rem; flex-wrap: wrap">
+    <!-- Ingredients Section -->
+    <div style="flex: 1; min-width: 280px">
+      <h2>Ingredients</h2>
+      <ul style="list-style: none; padding: 0">
+        {% for ing in recipe.ingredients %}
+        <li style="padding: 0.6rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between">
+          <span>{{ ing.amount|format_amount }} {{ ing.unit|format_unit }}</span>
+          <span><strong>{{ ing.name|title }}</strong></span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Steps Section -->
+    <div style="flex: 2; min-width: 300px">
+      <h2>Instructions</h2>
+      <ol style="padding-left: 1.2rem; line-height: 1.6">
+        {% for step in recipe.steps %}
+        <li style="margin-bottom: 0.8rem">{{ step }}</li>
+        {% endfor %}
+      </ol>
+    </div>
   </div>
 </div>
 
 <script>
-  function addCurrentRecipeToList(recipeId) {
-      const servingsInput = document.getElementById('servings');
-      const servings = servingsInput ? parseInt(servingsInput.value, 10) : {{ recipe.servings }};
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem('recipe_cart') || '[]')
+    } catch (e) {
+      return []
+    }
+  }
 
-      let cart = [];
-      try {
-          cart = JSON.parse(localStorage.getItem('recipe_cart') || '[]');
-      } catch (e) {
-          cart = [];
-      }
+  function saveCart(cart) {
+    localStorage.setItem('recipe_cart', JSON.stringify(cart))
+  }
 
-      const idx = cart.findIndex(item => item.id === recipeId);
-      if (idx >= 0) {
-          cart[idx].servings = servings;
-      } else {
-          cart.push({ id: recipeId, servings: servings });
-      }
-
-      localStorage.setItem('recipe_cart', JSON.stringify(cart));
-
-      const params = new URLSearchParams();
-      cart.forEach(item => params.append('r', `${item.id}:${item.servings}`));
-      window.location.href = `/shopping?${params.toString()}`;
+  function addCurrentRecipeToList(recipeId, servings) {
+    let cart = getCart()
+    const existingIdx = cart.findIndex((item) => item.id === recipeId)
+    if (existingIdx >= 0) {
+      cart[existingIdx].servings = servings
+    } else {
+      cart.push({ id: recipeId, servings: servings })
+    }
+    saveCart(cart)
+    alert('Recipe added to your shopping list!')
   }
 </script>
 {% endblock %}

@@ -14,13 +14,18 @@
       <h3>{{ recipe.name }}</h3>
       <p>{{ recipe.description or 'Delicious homemade recipe.' }}</p>
       <div class="recipe-meta">
-        <span>⏱️ {{ recipe.prep_time + recipe.cook_time }} mins</span>
-        <span>📊 {{ recipe.difficulty }}</span>
-        <span>👥 {{ recipe.servings }} servings</span>
+        <span>Time: {{ recipe.prep_time + recipe.cook_time }} mins</span>
+        <span>Difficulty: {{ recipe.difficulty }}</span>
+        <span>Servings: {{ recipe.servings }}</span>
       </div>
-      <div class="card-actions">
+
+      <div class="card-actions" style="display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem; flex-wrap: wrap">
         <a href="/recipes/{{ recipe.id }}" class="btn-secondary">View Recipe</a>
-        <button onclick="addToList({{ recipe.id }}, {{ recipe.servings }})" class="btn">Add to List</button>
+        <div style="display: flex; align-items: center; gap: 0.3rem">
+          <label for="servings-{{ recipe.id }}" style="font-size: 0.85rem; color: #555">Servings:</label>
+          <input type="number" id="servings-{{ recipe.id }}" value="{{ recipe.servings }}" min="1" max="50" style="width: 55px; padding: 0.35rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px" />
+        </div>
+        <button onclick="addToList({{ recipe.id }})" class="btn" style="flex: 1; min-width: 100px">Add to List</button>
       </div>
     </div>
   </div>
@@ -55,21 +60,19 @@
     }
   }
 
-  function addToList(recipeId, defaultServings) {
-    const servingsStr = prompt('How many servings would you like to prepare?', defaultServings)
-    if (servingsStr !== null) {
-      const servings = parseInt(servingsStr, 10)
-      if (!isNaN(servings) && servings > 0) {
-        let cart = getCart()
-        const existingIdx = cart.findIndex((item) => item.id === recipeId)
-        if (existingIdx >= 0) {
-          cart[existingIdx].servings = servings
-        } else {
-          cart.push({ id: recipeId, servings: servings })
-        }
-        saveCart(cart)
-        alert('Recipe added to your shopping list!')
+  function addToList(recipeId) {
+    const input = document.getElementById(`servings-${recipeId}`)
+    const servings = input ? parseInt(input.value, 10) : 1
+    if (!isNaN(servings) && servings > 0) {
+      let cart = getCart()
+      const existingIdx = cart.findIndex((item) => item.id === recipeId)
+      if (existingIdx >= 0) {
+        cart[existingIdx].servings = servings
+      } else {
+        cart.push({ id: recipeId, servings: servings })
       }
+      saveCart(cart)
+      alert('Recipe added to your shopping list!')
     }
   }
 
