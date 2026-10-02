@@ -13,8 +13,8 @@
 
       <!-- Serving Scale Form -->
       <form method="get" action="/recipes/{{ recipe.id }}" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem">
-        <label for="servings"><strong>Servings:</strong></label>
-        <input type="number" id="servings" name="servings" value="{{ recipe.servings }}" min="1" max="50" style="width: 70px; padding: 0.4rem; font-size: 0.95rem" />
+        <label for="servings-{{ recipe.id }}"><strong>Servings:</strong></label>
+        <input type="number" id="servings-{{ recipe.id }}" name="servings" value="{{ recipe.servings }}" min="1" max="50" style="width: 70px; padding: 0.4rem; font-size: 0.95rem" />
         <button type="submit" class="btn-secondary">Scale Recipe</button>
       </form>
 
@@ -34,7 +34,7 @@
         </div>
       </form>
 
-      <button onclick="addCurrentRecipeToList({{ recipe.id }}, {{ recipe.servings }})" class="btn" style="width: 100%; margin-top: 0.5rem">Add to Shopping List</button>
+      <button onclick="addToList({{ recipe.id }})" class="btn" style="width: 100%; margin-top: 0.5rem">Add to Shopping List</button>
     </div>
 
     <div style="flex: 1; min-width: 300px; text-align: center">
@@ -70,29 +70,4 @@
   </div>
 </div>
 
-<script>
-  function getCart() {
-    try {
-      return JSON.parse(localStorage.getItem('recipe_cart') || '[]')
-    } catch (e) {
-      return []
-    }
-  }
-
-  function saveCart(cart) {
-    localStorage.setItem('recipe_cart', JSON.stringify(cart))
-  }
-
-  function addCurrentRecipeToList(recipeId, servings) {
-    let cart = getCart()
-    const existingIdx = cart.findIndex((item) => item.id === recipeId)
-    if (existingIdx >= 0) {
-      cart[existingIdx].servings = servings
-    } else {
-      cart.push({ id: recipeId, servings: servings })
-    }
-    saveCart(cart)
-    alert('Recipe added to your shopping list!')
-  }
-</script>
 {% endblock %}

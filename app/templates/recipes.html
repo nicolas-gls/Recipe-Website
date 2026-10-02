@@ -35,47 +35,6 @@
 </div>
 
 <script>
-  function getCart() {
-    try {
-      return JSON.parse(localStorage.getItem('recipe_cart') || '[]')
-    } catch (e) {
-      return []
-    }
-  }
-
-  function saveCart(cart) {
-    localStorage.setItem('recipe_cart', JSON.stringify(cart))
-    updateNavShoppingLinks()
-  }
-
-  function updateNavShoppingLinks() {
-    const cart = getCart()
-    if (cart.length > 0) {
-      const params = new URLSearchParams()
-      cart.forEach((item) => params.append('r', `${item.id}:${item.servings}`))
-      const targetUrl = `/shopping?${params.toString()}`
-      document.querySelectorAll('a[href^="/shopping"]').forEach((link) => {
-        link.href = targetUrl
-      })
-    }
-  }
-
-  function addToList(recipeId) {
-    const input = document.getElementById(`servings-${recipeId}`)
-    const servings = input ? parseInt(input.value, 10) : 1
-    if (!isNaN(servings) && servings > 0) {
-      let cart = getCart()
-      const existingIdx = cart.findIndex((item) => item.id === recipeId)
-      if (existingIdx >= 0) {
-        cart[existingIdx].servings = servings
-      } else {
-        cart.push({ id: recipeId, servings: servings })
-      }
-      saveCart(cart)
-      alert('Recipe added to your shopping list!')
-    }
-  }
-
   document.addEventListener('DOMContentLoaded', updateNavShoppingLinks)
 </script>
 {% endblock %}
