@@ -47,12 +47,6 @@ On startup, the app creates the SQLite schema if it does not exist. If the
 database has no recipes, it seeds the database from `data/recipes.json` and
 `data/supermarket_products.csv`. The database is stored at `data/app.db`.
 
-By default, the database is stored at `data/app.db`. You can override the directory using the `DATA_DIR` environment variable, for example:
-
-```bash
-DATA_DIR=/custom/path python app.py
-```
-
 > **Warning:** Running `python -m app.seed` manually resets and repopulates the
 > database. This removes existing database data before reseeding.
 
