@@ -58,9 +58,9 @@ DATA_DIR=/custom/path python app.py
 
 ## Using the application
 
-- Web interface: <http://localhost:8000/>
-- Health check: <http://localhost:8000/health>
-- Interactive API documentation: <http://localhost:8000/docs>
+- Web interface: <http://0.0.0.0:8000/>
+- Health check: <http://0.0.0.0:8000/health>
+- Interactive API documentation: <http://0.0.0.0:8000/docs>
 
 The shopping-list page uses the browser's local storage to retain the selected
 recipes in that browser.
