@@ -1,30 +1,97 @@
-import sqlite3
+import logging
+import time
 
-from app.config import DB_PATH
+import uuid
+
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.engine import Engine
+
+from app.config import (
+    DATABASE_URL,
+    DB_MAX_RETRIES,
+    DB_RETRY_DELAY,
+    DB_MAX_RETRY_DELAY,
+)
+
+logger = logging.getLogger(__name__)
+
+engine: Engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10,
+)
 
 
-def get_connection():
-    """Create a connection to the Shopping service database."""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON;")
-    return conn
+def is_azure_sql_cold_start_error(error: Exception) -> bool:
+    """Check whether the SQL Server error is Azure SQL error 40613."""
+    current: Exception | None = error
+    seen: set[int] = set()
+
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        if "40613" in str(current):
+            return True
+
+        current = getattr(current, "orig", None)
+
+    return False
 
 
-def init_db():
-    """Create Shopping-owned tables if they do not exist."""
-    conn = get_connection()
+def check_connection() -> bool:
+    """Check that Shopping can connect to its database."""
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    return True
 
-    conn.executescript("""
-        CREATE TABLE IF NOT EXISTS supermarket_products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ingredient_id INTEGER NOT NULL,
-            product_name TEXT NOT NULL,
-            price REAL NOT NULL,
-            package_size REAL,
-            package_unit TEXT
-        );
-    """)
 
-    conn.commit()
-    conn.close()
+def check_read_write() -> bool:
+    """Check that Shopping can read and write to its database."""
+    with engine.connect() as connection:
+        transaction = connection.begin()
+        try:
+            connection.execute(text("SELECT 1"))
+            connection.execute(
+                text("""
+                    INSERT INTO dbo.schema_migrations (version)
+                    VALUES (:version)
+                """),
+                {"version": f"health-check-{uuid.uuid4()}"},
+            )
+        finally:
+            transaction.rollback()
+    return True
+
+
+def wait_for_database() -> None:
+    """Retry database connections with exponential backoff."""
+    delay = DB_RETRY_DELAY
+
+    for attempt in range(1, DB_MAX_RETRIES + 1):
+        try:
+            check_connection()
+            logger.info("Shopping database connection established.")
+            return
+
+        except SQLAlchemyError as error:
+            if not is_azure_sql_cold_start_error(error):
+                raise
+
+            if attempt == DB_MAX_RETRIES:
+                logger.exception(
+                    "Shopping database unavailable after %s attempts.",
+                    DB_MAX_RETRIES,
+                )
+                raise
+
+            logger.warning(
+                "Shopping database is starting up. "
+                "Attempt %s/%s. Retrying in %s seconds.",
+                attempt,
+                DB_MAX_RETRIES,
+                delay,
+            )
+
+            time.sleep(delay)
+            delay = min(delay * 2, DB_MAX_RETRY_DELAY)
