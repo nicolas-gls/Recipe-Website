@@ -1,14 +1,16 @@
 import json
 import math
+import socket
+
 from typing import List, Dict, Any
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
-import socket
 
 from fastapi import HTTPException
+from sqlalchemy import text
 
 from app.config import CATALOG_URL
-from app.database import get_connection
+from app.database import engine
 from app.shopping.models import (
     RecipeSelection,
     ShoppingItem,
@@ -18,6 +20,7 @@ from app.shopping.models import (
 
 def normalize_unit_and_amount(amount: float, unit: str) -> tuple[float, str]:
     """Normalize units to standard base units."""
+
     u = unit.lower().strip()
 
     if u in ["kg", "kilogram", "kilograms"]:
@@ -129,29 +132,34 @@ def calculate_shopping_list(
                 }
 
     # Only access Shopping's own database.
-    conn = get_connection()
+    items: List[ShoppingItem] = []
+    total_cost = 0.0
 
-    try:
-        cursor = conn.cursor()
-
-        items: List[ShoppingItem] = []
-        total_cost = 0.0
+    with engine.connect() as connection:
 
         for ingredient_id, data in aggregated.items():
             total_amount = round(data["total_amount"], 2)
             unit = data["unit"]
 
-            cursor.execute(
-                """
-                SELECT product_name, price, package_size, package_unit
-                FROM supermarket_products
-                WHERE ingredient_id = ?
+            query = text("""
+                SELECT
+                    product_name,
+                    price,
+                    package_size,
+                    package_unit
+                FROM dbo.supermarket_products
+                WHERE ingredient_id = :ingredient_id
                 ORDER BY price ASC
-                """,
-                (ingredient_id,),
-            )
+            """)
 
-            products = cursor.fetchall()
+            products = (
+                connection.execute(
+                    query,
+                    {"ingredient_id": ingredient_id},
+                )
+                .mappings()
+                .all()
+            )
 
             product_name = None
             packages_needed = 1
@@ -198,17 +206,14 @@ def calculate_shopping_list(
                 )
             )
 
-        items.sort(
-            key=lambda item: (
-                item.category or "",
-                item.ingredient_name,
-            )
+    items.sort(
+        key=lambda item: (
+            item.category or "",
+            item.ingredient_name,
         )
+    )
 
-        return ShoppingListResponse(
-            items=items,
-            total_estimated_cost=round(total_cost, 2),
-        )
-
-    finally:
-        conn.close()
+    return ShoppingListResponse(
+        items=items,
+        total_estimated_cost=round(total_cost, 2),
+    )
