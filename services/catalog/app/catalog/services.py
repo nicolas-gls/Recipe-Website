@@ -1,6 +1,9 @@
 import json
 from typing import List, Optional
-from app.database import get_connection
+
+from sqlalchemy import text
+
+from app.database import engine
 from app.catalog.models import RecipeSummary, RecipeDetail, IngredientDetail
 
 
@@ -10,31 +13,53 @@ def scale_ingredient_amount(
     """Scales ingredient quantity proportionally based on target servings."""
     if default_servings <= 0 or target_servings <= 0:
         return base_amount
+
     scale_factor = target_servings / default_servings
     return round(base_amount * scale_factor, 2)
 
 
 def list_recipes(search_query: Optional[str] = None) -> List[RecipeSummary]:
-    """Retrieves recipes from the database, filtering by recipe title OR ingredient name."""
-    conn = get_connection()
-    cursor = conn.cursor()
+    """Retrieves recipes, filtering by recipe title or ingredient name."""
 
-    if search_query:
-        query = """
-            SELECT DISTINCT r.id, r.name, r.description, r.prep_time, r.cook_time, r.difficulty, r.servings, r.image_url
-            FROM recipes r
-            LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-            LEFT JOIN ingredients i ON ri.ingredient_id = i.id
-            WHERE r.name LIKE ? OR i.name LIKE ?
-        """
-        term = f"%{search_query.strip()}%"
-        cursor.execute(query, (term, term))
-    else:
-        query = "SELECT id, name, description, prep_time, cook_time, difficulty, servings, image_url FROM recipes"
-        cursor.execute(query)
+    with engine.connect() as connection:
+        if search_query:
+            query = text("""
+                SELECT DISTINCT
+                    r.id,
+                    r.name,
+                    r.description,
+                    r.prep_time,
+                    r.cook_time,
+                    r.difficulty,
+                    r.servings,
+                    r.image_url
+                FROM dbo.recipes r
+                LEFT JOIN dbo.recipe_ingredients ri
+                    ON r.id = ri.recipe_id
+                LEFT JOIN dbo.ingredients i
+                    ON ri.ingredient_id = i.id
+                WHERE r.name LIKE :term
+                   OR i.name LIKE :term
+            """)
 
-    rows = cursor.fetchall()
-    conn.close()
+            term = f"%{search_query.strip()}%"
+            rows = connection.execute(query, {"term": term}).mappings().all()
+
+        else:
+            query = text("""
+                SELECT
+                    id,
+                    name,
+                    description,
+                    prep_time,
+                    cook_time,
+                    difficulty,
+                    servings,
+                    image_url
+                FROM dbo.recipes
+            """)
+
+            rows = connection.execute(query).mappings().all()
 
     return [
         RecipeSummary(
@@ -46,7 +71,7 @@ def list_recipes(search_query: Optional[str] = None) -> List[RecipeSummary]:
             difficulty=row["difficulty"],
             servings=row["servings"],
             image_url=row["image_url"]
-            or f"https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
+            or "https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
         )
         for row in rows
     ]
@@ -55,43 +80,67 @@ def list_recipes(search_query: Optional[str] = None) -> List[RecipeSummary]:
 def get_recipe_by_id(
     recipe_id: int, target_servings: Optional[int] = None
 ) -> Optional[RecipeDetail]:
-    """Retrieves a single recipe with ingredients scaled to target servings if specified."""
-    conn = get_connection()
-    cursor = conn.cursor()
+    """Retrieves a recipe with ingredients scaled to the requested servings."""
 
-    cursor.execute(
-        "SELECT id, name, description, prep_time, cook_time, difficulty, servings, steps, image_url FROM recipes WHERE id = ?",
-        (recipe_id,),
-    )
-    recipe_row = cursor.fetchone()
-    if not recipe_row:
-        conn.close()
-        return None
+    with engine.connect() as connection:
+        recipe_query = text("""
+            SELECT
+                id,
+                name,
+                description,
+                prep_time,
+                cook_time,
+                difficulty,
+                servings,
+                steps,
+                image_url
+            FROM dbo.recipes
+            WHERE id = :recipe_id
+        """)
+
+        recipe_row = (
+            connection.execute(recipe_query, {"recipe_id": recipe_id})
+            .mappings()
+            .first()
+        )
+
+        if not recipe_row:
+            return None
+
+        ingredients_query = text("""
+            SELECT
+                i.id,
+                i.name,
+                i.category,
+                ri.amount,
+                ri.unit
+            FROM dbo.recipe_ingredients ri
+            JOIN dbo.ingredients i
+                ON ri.ingredient_id = i.id
+            WHERE ri.recipe_id = :recipe_id
+        """)
+
+        ing_rows = (
+            connection.execute(ingredients_query, {"recipe_id": recipe_id})
+            .mappings()
+            .all()
+        )
 
     default_servings = recipe_row["servings"]
-    effective_servings = (
-        target_servings
-        if (target_servings and target_servings > 0)
-        else default_servings
-    )
 
-    cursor.execute(
-        """
-        SELECT i.id, i.name, i.category, ri.amount, ri.unit
-        FROM recipe_ingredients ri
-        JOIN ingredients i ON ri.ingredient_id = i.id
-        WHERE ri.recipe_id = ?
-    """,
-        (recipe_id,),
+    effective_servings = (
+        target_servings if target_servings and target_servings > 0 else default_servings
     )
-    ing_rows = cursor.fetchall()
-    conn.close()
 
     ingredients = []
+
     for ing in ing_rows:
         scaled_qty = scale_ingredient_amount(
-            ing["amount"], default_servings, effective_servings
+            ing["amount"],
+            default_servings,
+            effective_servings,
         )
+
         ingredients.append(
             IngredientDetail(
                 id=ing["id"],
@@ -115,5 +164,5 @@ def get_recipe_by_id(
         steps=steps_list,
         ingredients=ingredients,
         image_url=recipe_row["image_url"]
-        or f"https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
+        or "https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=600&q=80",
     )

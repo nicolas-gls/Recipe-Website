@@ -1,14 +1,31 @@
+import logging
+import os
+import time
+
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from app.database import init_db
+from app.database import wait_for_database, check_read_write
+from app.migrations import run_migrations
 from app.catalog.routes import router as catalog_router
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+)
+
+logger = logging.getLogger("catalog.requests")
+VERSION = os.getenv("GIT_SHA", "unknown")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    wait_for_database()
+    run_migrations()
     yield
 
 
@@ -19,9 +36,54 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.perf_counter()
+
+    try:
+        response = await call_next(request)
+    except Exception:
+        logger.exception(
+            "%s %s failed",
+            request.method,
+            request.url.path,
+        )
+        raise
+
+    duration = (time.perf_counter() - start_time) * 1000
+
+    logger.info(
+        "%s %s - %s - %.2f ms",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration,
+    )
+
+    return response
+
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 app.include_router(catalog_router)
 
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "service": "catalog"}
+    try:
+        check_read_write()
+        return {"status": "ok", "db": "ok", "version": VERSION}
+
+    except Exception:
+        logger.exception("Catalog database health check failed")
+
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "error",
+                "db": "unavailable",
+                "version": VERSION,
+            },
+        )
