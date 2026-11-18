@@ -1,0 +1,108 @@
+Day 1 – November 16
+
+Architecture
+Split your application into two services
+What you will do:
+- Examine your existing code and decide which files belong to Catalog and which belong to Shopping.
+- Create the new folder structure:
+  - services/catalog/
+  - services/shopping/
+  - ui/
+- Move and adapt the existing Python code into the two independent services.
+- Give each service its own FastAPI application and API endpoints.
+- Update ADR.md with your new architecture decision (ADR-6).
+End-of-day result: You have two separate FastAPI applications instead of one monolithic application.
+
+
+Day 2 – November 17 (Today): SQL Server Migration, Seeding & Migration Runner
+Focus: SQL Server migration, database seeding, and migration runner implementation.
+
+Key Deliverables & Actions:
+1. Implement SQL Server connection logic using pymssql / SQLAlchemy driver.
+2. Extract data from data/app.db into SQL Server schemas/seed scripts.
+3. Implement an automated, idempotent migration runner (schema_migrations table) in both services.
+4. Create migration 001_init.sql (schema + data) and migration 002_*.sql that alters a table with existing data.
+5. Implement cold-start connection retry with exponential backoff (error 40613).
+6. Implement GET /health with database read/write checks and stdout request logging middleware.
+Commit & ADR Plan:
+- ADR-7 (Data and migrations).
+- Log in AI_USAGE.md.
+- Branch PR with 2–3 commits.
+
+
+Day 3 – November 18: Static UI & Dockerfiles (Manual Docker Run)
+Focus: Converting the UI to static files and creating Dockerfiles.
+
+Key Deliverables & Actions:
+1. Convert Jinja2 server-rendered templates into static HTML/CSS/JS in ui/.
+2. Implement client-side dynamic URL configuration (config.js) for Catalog and Shopping endpoints.
+3. Enable CORS on both FastAPI services, restricted to the UI origin.
+4. Author production Dockerfiles for catalog and shopping (pinned dependencies, non-root user, no COPY . .).
+5. Manually verify docker build and docker run for both containers.
+Commit & ADR Plan:
+- ADR-8 (Serverless hosting on Azure & scale-to-zero).
+- Log in AI_USAGE.md.
+- Branch PR with 2–3 commits.
+
+
+Day 4 – November 19: Docker Compose Stack & Cross-Seam Resilience Testing
+Focus: Docker Compose integration and cross-service resilience testing.
+
+Key Deliverables & Actions:
+1. Create docker-compose.yml with:
+   - SQL Server (mssql:2022-latest).
+   - db/init.sql initialization service (separate databases and logins).
+   - Catalog service.
+   - Shopping service.
+   - UI (nginx:alpine).
+2. Test complete startup using docker compose up --build.
+3. Implement and test partial failure behavior (docker compose stop catalog → Shopping degrades gracefully with a timeout).
+4. Write unit tests for each service and cross-seam integration tests, ensuring at least 70% test coverage.
+Commit & ADR Plan:
+- ADR-9 (Pipeline and testing).
+- Log in AI_USAGE.md.
+- Branch PR with 2–3 commits.
+
+
+Day 5 – November 20: System Spec, OpenAPI & CI Pipeline
+Focus: System specification, API documentation, and continuous integration.
+
+Key Deliverables & Actions:
+1. Generate and commit services/catalog/openapi.yaml and services/shopping/openapi.yaml.
+2. Add system.yaml to the root directory, conforming to system.schema.json.
+3. Create a GitHub Actions CI workflow (.github/workflows/ci.yml) covering:
+   - Linting.
+   - Test suite with SQL Server service container.
+   - At least 70% test coverage check.
+   - OpenAPI and system.yaml schema validations.
+   - Docker build checks.
+Commit & ADR Plan:
+- ADR-10 (Deliberately not built: e.g. API Gateway / Broker).
+- Log in AI_USAGE.md.
+- Branch PR with 2–3 commits.
+
+
+Day 6 – November 21–22: Azure CD Pipeline, Evidence & Final Submission Report
+Focus: Azure deployment, evidence collection, and final documentation.
+
+Key Deliverables & Actions:
+1. Set up Azure resources in the assigned resource group using your student prefix:
+   - Logical SQL Server.
+   - Two serverless databases.
+   - Container Apps environment.
+   - Static Web App.
+2. Implement the CD workflow (.github/workflows/cd.yml) to:
+   - Push SHA-tagged images to GHCR.
+   - Implement a revision-based deployment strategy (deploy new revision, probe /health, switch traffic).
+   - Deploy the UI to Static Web App.
+   - Perform post-deployment health checks.
+3. Capture required evidence:
+   - Migration on the live Azure database.
+   - Partial failure behavior.
+   - Successful and failed CD runs.
+4. Write a 4–5 page report and update the README with local setup and deployment guides.
+5. Tag the final submission as submission and verify commit distribution across all six days.
+Commit & ADR Plan:
+- Final documentation polish.
+- Tag submission.
+- Final PR to main.
