@@ -25,13 +25,18 @@ engine: Engine = create_engine(
 
 
 def is_azure_sql_cold_start_error(error: Exception) -> bool:
-    """Check whether the SQL Server error is Azure SQL error 40613."""
+    """Check whether the SQL Server error is Azure SQL error 40613 or pymssql DB-Lib timeout 20002/20003."""
     current: Exception | None = error
     seen: set[int] = set()
 
     while current is not None and id(current) not in seen:
         seen.add(id(current))
-        if "40613" in str(current):
+        msg = str(current)
+        # 18456 is authentication failure (bad user/password/db), not a cold start
+        if "18456" in msg:
+            return False
+
+        if any(code in msg for code in ("40613", "20002", "20003", "connection timeout", "Adaptive Server is unavailable")):
             return True
 
         current = getattr(current, "orig", None)

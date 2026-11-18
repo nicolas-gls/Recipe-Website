@@ -1,0 +1,18 @@
+.git
+.github
+.aws
+.codex
+.env
+.env.*
+**/.env
+**/.env.*
+**/__pycache__
+**/*.pyc
+**/*.db
+**/data
+app
+data
+tests
+ui
+Assignment 2 Instructions.txt
+Individual Assignment 1 Report.pdf

@@ -5,11 +5,13 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.database import wait_for_database, check_read_write
 from app.migrations import run_migrations
 from app.shopping.routes import router as shopping_router
+from app.config import UI_ORIGINS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,6 +34,14 @@ app = FastAPI(
     description="Generates shopping lists and estimates product costs.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=UI_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 
