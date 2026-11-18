@@ -6,12 +6,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.database import wait_for_database, check_read_write
 from app.migrations import run_migrations
 from app.catalog.routes import router as catalog_router
+from app.config import UI_ORIGINS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -34,6 +36,14 @@ app = FastAPI(
     description="Manages recipes and their ingredients.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=UI_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 

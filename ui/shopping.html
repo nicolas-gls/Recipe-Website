@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping List | Recipe Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="config.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body data-page="shopping">
+    <header class="navbar"><nav class="nav-container" aria-label="Main navigation"><a class="brand" href="index.html">🍽️ Recipe Hub</a><div class="nav-links"><a href="index.html">Recipes Catalog</a><a href="shopping.html">Shopping List <span id="cart-count"></span></a></div></nav></header>
+    <main class="container"><section class="page-heading split-heading"><div><h1>Shopping List</h1><p>Your selected recipes are combined into one list.</p></div><a class="btn-secondary" href="index.html">+ Add recipes</a></section><div id="shopping-message" class="message" role="status"></div><section id="selected-recipes" class="panel"></section><section id="shopping-results" class="panel" aria-live="polite"></section></main>
+  </body>
+</html>
