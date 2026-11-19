@@ -28,6 +28,104 @@ Install the dependencies:
 python -m pip install -r requirements.txt
 ```
 
+## Run the split application with Docker Compose
+
+The Assignment 2 stack runs SQL Server, an idempotent database-initialization
+service, the Catalog service, the Shopping service, and the static UI served by
+Nginx. The UI is not a third application service; it is the same static content
+that will later be uploaded to Azure Storage static website hosting.
+
+Create local-only database credentials from the example file:
+
+```bash
+cp .env.example .env
+```
+
+Do not commit `.env`. On Apple Silicon, enable Rosetta emulation in Docker
+Desktop because the SQL Server image is published for `linux/amd64`.
+
+Start the complete stack:
+
+```bash
+docker compose up --build
+```
+
+The local endpoints are:
+
+- UI: <http://localhost:8080>
+- Catalog API: <http://localhost:8001>
+- Shopping API: <http://localhost:8002>
+- Catalog health: <http://localhost:8001/health>
+- Shopping health: <http://localhost:8002/health>
+
+The `init-db` Compose service creates `catalog_db`, `shopping_db`, and their
+separate logins by running `db/init.sql`. The script is idempotent. The
+application services then run their own versioned migrations. SQL Server data
+is kept in the `mssql-data` Docker volume, so restarting the stack does not
+reseed or recreate the databases.
+
+To test the cross-service failure behavior, stop Catalog while the rest of the
+stack is running:
+
+```bash
+docker compose stop catalog
+```
+
+Shopping continues to serve its own `/health` endpoint, while a shopping-list
+request returns a controlled service-unavailable response because its Catalog
+HTTP call cannot complete. Restart Catalog with:
+
+```bash
+docker compose start catalog
+```
+
+Stop the stack when finished:
+
+```bash
+docker compose down
+```
+
+## Assignment 2 service tests
+
+The Assignment 2 coverage and test results come only from the new split-service
+tests. They are kept with their respective services:
+
+- `services/catalog/tests/` tests the Catalog service logic.
+- `services/shopping/tests/test_services.py` tests Shopping service logic.
+- `services/shopping/tests/test_cross_seam_integration.py` tests Shopping calling
+  Catalog over HTTP.
+
+The original `tests/` directory is retained temporarily as Assignment 1
+regression coverage. It tests the old monolith and SQLite implementation, is
+not included in the Assignment 2 service coverage figures, and is planned for
+deletion when the unused monolithic application is removed. It is run only to
+confirm that the migration has not accidentally damaged the reference
+implementation.
+
+Run the split-service tests with:
+
+```bash
+DATABASE_URL='mssql+pymssql://test:test@localhost:1433/catalog_db' \
+PYTHONPATH=services/catalog \
+python -m pytest -q services/catalog/tests \
+  --cov=app.catalog.services \
+  --cov-report=term-missing \
+  --cov-fail-under=70
+
+DATABASE_URL='mssql+pymssql://test:test@localhost:1433/shopping_db' \
+CATALOG_URL='http://127.0.0.1:9' \
+PYTHONPATH=services/shopping \
+python -m pytest -q services/shopping/tests \
+  --cov=app.shopping.services \
+  --cov-report=term-missing \
+  --cov-fail-under=70
+```
+
+The service tests replace database connections with deterministic fakes. The
+cross-seam integration test starts a local HTTP Catalog stub and verifies that
+Shopping calls it over HTTP before using Shopping's own product database. It
+does not require Azure or a live SQL Server.
+
 ## Run locally
 
 Start the application from the repository root:
