@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=./system.schema.json
+student: ndgrass.ieu2024
+prefix: ndgrass-ieu2024
+public_url: https://pending-deployment.example.invalid
+ui:
+  path: ui/
+  storage_account: ndgrassieu2024ui
+  calls:
+    - catalog
+    - shopping
+azure:
+  resource_group: rg-ndgrass-ieu2024
+  container_apps_environment: ndgrass-ieu2024-env
+  sql_server: ndgrass-ieu2024-sql
+  registry: ghcr.io/nicolas-gls
+services:
+  catalog:
+    description: Recipe catalog and ingredient service.
+    path: services/catalog/
+    openapi: services/catalog/openapi.yaml
+    port_default: 8000
+    health: /health
+    migrations: services/catalog/migrations
+    env:
+      PORT:
+        default: 8000
+        description: Port on which the service listens.
+      DATABASE_URL:
+        secret: true
+        description: SQL Server connection string for the Catalog database.
+      CORS_ORIGINS:
+        default: http://localhost:8080
+        description: Comma-separated browser origins allowed by CORS.
+      UI_ORIGIN:
+        default: http://localhost:8080
+        description: Backwards-compatible single UI origin setting.
+      GIT_SHA:
+        default: unknown
+        description: Build or commit identifier reported by the health endpoint.
+    azure:
+      container_app: ndgrass-ieu2024-catalog
+      sql_database: ndgrass-ieu2024-catalog-db
+  shopping:
+    description: Shopping-list aggregation and package-pricing service.
+    path: services/shopping/
+    openapi: services/shopping/openapi.yaml
+    port_default: 8000
+    health: /health
+    migrations: services/shopping/migrations
+    env:
+      PORT:
+        default: 8000
+        description: Port on which the service listens.
+      DATABASE_URL:
+        secret: true
+        description: SQL Server connection string for the Shopping database.
+      CATALOG_URL:
+        default: http://catalog:8000
+        description: Base URL used for server-side Catalog requests.
+      CORS_ORIGINS:
+        default: http://localhost:8080
+        description: Comma-separated browser origins allowed by CORS.
+      UI_ORIGIN:
+        default: http://localhost:8080
+        description: Backwards-compatible single UI origin setting.
+      GIT_SHA:
+        default: unknown
+        description: Build or commit identifier reported by the health endpoint.
+    calls:
+      - service: catalog
+        url_env: CATALOG_URL
+        endpoints:
+          - GET /recipes/{recipe_id}
+        timeout_s: 5
+        on_failure: Return 503 when Catalog is unavailable, 504 on timeout, and 502 for an unexpected Catalog response.
+    azure:
+      container_app: ndgrass-ieu2024-shopping
+      sql_database: ndgrass-ieu2024-shopping-db
