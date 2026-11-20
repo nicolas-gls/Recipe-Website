@@ -210,6 +210,32 @@ Latest verified result: **17 passed**; **99.03% combined coverage** (catalog
 service: **100%**, shopping service: **98%**). The command requires `pytest` and
 `pytest-cov`, both listed in `requirements.txt`.
 
+## Day 5 specifications and CI
+
+The service contracts are committed as generated OpenAPI 3.1 documents:
+
+- `services/catalog/openapi.yaml`
+- `services/shopping/openapi.yaml`
+
+The root `system.yaml` describes the UI, service paths, environment variables,
+cross-service call, and planned Azure resources. It is validated against
+`system.schema.json` together with both OpenAPI documents.
+
+Generate the service documents locally with:
+
+```bash
+DATABASE_URL='mssql+pymssql://user:pass@localhost:1433/catalog_db' \
+  PYTHONPATH=services/catalog python scripts/generate_openapi.py catalog
+DATABASE_URL='mssql+pymssql://user:pass@localhost:1433/shopping_db' \
+  PYTHONPATH=services/shopping python scripts/generate_openapi.py shopping
+```
+
+The GitHub Actions workflow in `.github/workflows/ci.yml` runs on pushes and
+pull requests. It lints Python sources, validates the generated specifications,
+initializes a SQL Server service container and runs migration/health smoke
+checks, runs both service suites with separate 70% coverage gates, and builds
+both Docker images.
+
 ## Project layout
 
 ```text

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
-from app.catalog.models import RecipeSummary, RecipeDetail
+from app.catalog.models import ErrorResponse, RecipeSummary, RecipeDetail
 from app.catalog.services import list_recipes, get_recipe_by_id
 
 router = APIRouter(prefix="/recipes", tags=["Catalog"])
@@ -11,7 +11,11 @@ def get_recipes(q: Optional[str] = Query(None, description="Search recipes by na
     return list_recipes(search_query=q)
 
 
-@router.get("/{recipe_id}", response_model=RecipeDetail)
+@router.get(
+    "/{recipe_id}",
+    response_model=RecipeDetail,
+    responses={404: {"model": ErrorResponse, "description": "Recipe not found."}},
+)
 def get_recipe(
     recipe_id: int,
     servings: Optional[int] = Query(None, description="Target serving size"),

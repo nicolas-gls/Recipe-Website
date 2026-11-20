@@ -1,0 +1,272 @@
+openapi: 3.1.0
+info:
+  title: Recipe Catalog Service
+  description: Manages recipes and their ingredients.
+  version: 1.0.0
+paths:
+  /recipes:
+    get:
+      tags:
+      - Catalog
+      summary: Get Recipes
+      operationId: get_recipes_recipes_get
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Search recipes by name
+          title: Q
+        description: Search recipes by name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeSummary'
+                title: Response Get Recipes Recipes Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /recipes/{recipe_id}:
+    get:
+      tags:
+      - Catalog
+      summary: Get Recipe
+      operationId: get_recipe_recipes__recipe_id__get
+      parameters:
+      - name: recipe_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Recipe Id
+      - name: servings
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          description: Target serving size
+          title: Servings
+        description: Target serving size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeDetail'
+        '404':
+          description: Recipe not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /health:
+    get:
+      summary: Health Check
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Database unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+components:
+  schemas:
+    ErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: ErrorResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HealthResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        db:
+          type: string
+          title: Db
+        version:
+          type: string
+          title: Version
+      type: object
+      required:
+      - status
+      - db
+      - version
+      title: HealthResponse
+    IngredientDetail:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        amount:
+          type: number
+          title: Amount
+        unit:
+          type: string
+          title: Unit
+      type: object
+      required:
+      - id
+      - name
+      - amount
+      - unit
+      title: IngredientDetail
+    RecipeDetail:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        prep_time:
+          type: integer
+          title: Prep Time
+        cook_time:
+          type: integer
+          title: Cook Time
+        difficulty:
+          type: string
+          title: Difficulty
+        servings:
+          type: integer
+          title: Servings
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        steps:
+          items:
+            type: string
+          type: array
+          title: Steps
+        ingredients:
+          items:
+            $ref: '#/components/schemas/IngredientDetail'
+          type: array
+          title: Ingredients
+      type: object
+      required:
+      - id
+      - name
+      - prep_time
+      - cook_time
+      - difficulty
+      - servings
+      - steps
+      - ingredients
+      title: RecipeDetail
+    RecipeSummary:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        prep_time:
+          type: integer
+          title: Prep Time
+        cook_time:
+          type: integer
+          title: Cook Time
+        difficulty:
+          type: string
+          title: Difficulty
+        servings:
+          type: integer
+          title: Servings
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+      type: object
+      required:
+      - id
+      - name
+      - prep_time
+      - cook_time
+      - difficulty
+      - servings
+      title: RecipeSummary
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

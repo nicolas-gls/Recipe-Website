@@ -1,7 +1,8 @@
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-CATALOG_URL = os.getenv("CATALOG_URL")
+PORT = int(os.getenv("PORT", "8000"))
+CATALOG_URL = os.getenv("CATALOG_URL", "http://catalog:8000")
 UI_ORIGIN = os.getenv("CORS_ORIGINS", os.getenv("UI_ORIGIN", "http://localhost:8080"))
 UI_ORIGINS = [origin.strip().rstrip("/") for origin in UI_ORIGIN.split(",") if origin.strip()]
 

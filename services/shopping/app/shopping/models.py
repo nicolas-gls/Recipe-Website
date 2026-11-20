@@ -25,3 +25,13 @@ class ShoppingListRequest(BaseModel):
 class ShoppingListResponse(BaseModel):
     items: List[ShoppingItem]
     total_estimated_cost: float
+
+
+class ErrorResponse(BaseModel):
+    detail: str
+
+
+class HealthResponse(BaseModel):
+    status: str
+    db: str
+    version: str
