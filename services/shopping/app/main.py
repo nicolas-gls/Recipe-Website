@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app.database import wait_for_database, check_read_write
 from app.migrations import run_migrations
+from app.shopping.models import HealthResponse
 from app.shopping.routes import router as shopping_router
 from app.config import UI_ORIGINS
 
@@ -75,7 +76,11 @@ async def log_requests(request: Request, call_next):
 app.include_router(shopping_router)
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    responses={503: {"model": HealthResponse, "description": "Database unavailable."}},
+)
 def health_check():
     try:
         check_read_write()

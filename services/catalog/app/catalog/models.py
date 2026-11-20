@@ -24,3 +24,13 @@ class RecipeSummary(BaseModel):
 class RecipeDetail(RecipeSummary):
     steps: List[str]
     ingredients: List[IngredientDetail]
+
+
+class ErrorResponse(BaseModel):
+    detail: str
+
+
+class HealthResponse(BaseModel):
+    status: str
+    db: str
+    version: str

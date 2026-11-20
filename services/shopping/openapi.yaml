@@ -1,0 +1,202 @@
+openapi: 3.1.0
+info:
+  title: Shopping List Service
+  description: Generates shopping lists and estimates product costs.
+  version: 1.0.0
+paths:
+  /shopping-list:
+    post:
+      tags:
+      - Shopping List
+      summary: Generate Shopping List
+      operationId: generate_shopping_list_shopping_list_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShoppingListRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '502':
+          description: Catalog returned an invalid or unexpected response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Catalog is unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: Catalog request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /health:
+    get:
+      summary: Health Check
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Database unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+components:
+  schemas:
+    ErrorResponse:
+      properties:
+        detail:
+          type: string
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: ErrorResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HealthResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        db:
+          type: string
+          title: Db
+        version:
+          type: string
+          title: Version
+      type: object
+      required:
+      - status
+      - db
+      - version
+      title: HealthResponse
+    RecipeSelection:
+      properties:
+        recipe_id:
+          type: integer
+          title: Recipe Id
+        target_servings:
+          type: integer
+          title: Target Servings
+      type: object
+      required:
+      - recipe_id
+      - target_servings
+      title: RecipeSelection
+    ShoppingItem:
+      properties:
+        ingredient_id:
+          type: integer
+          title: Ingredient Id
+        ingredient_name:
+          type: string
+          title: Ingredient Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        total_amount:
+          type: number
+          title: Total Amount
+        unit:
+          type: string
+          title: Unit
+        suggested_product_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Suggested Product Name
+        packages_needed:
+          type: integer
+          title: Packages Needed
+          default: 1
+        estimated_price:
+          type: number
+          title: Estimated Price
+          default: 0.0
+      type: object
+      required:
+      - ingredient_id
+      - ingredient_name
+      - total_amount
+      - unit
+      title: ShoppingItem
+    ShoppingListRequest:
+      properties:
+        recipes:
+          items:
+            $ref: '#/components/schemas/RecipeSelection'
+          type: array
+          title: Recipes
+      type: object
+      required:
+      - recipes
+      title: ShoppingListRequest
+    ShoppingListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ShoppingItem'
+          type: array
+          title: Items
+        total_estimated_cost:
+          type: number
+          title: Total Estimated Cost
+      type: object
+      required:
+      - items
+      - total_estimated_cost
+      title: ShoppingListResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

@@ -1,10 +1,18 @@
 from fastapi import APIRouter
-from app.shopping.models import ShoppingListRequest, ShoppingListResponse
+from app.shopping.models import ErrorResponse, ShoppingListRequest, ShoppingListResponse
 from app.shopping.services import calculate_shopping_list
 
 router = APIRouter(prefix="/shopping-list", tags=["Shopping List"])
 
 
-@router.post("", response_model=ShoppingListResponse)
+@router.post(
+    "",
+    response_model=ShoppingListResponse,
+    responses={
+        502: {"model": ErrorResponse, "description": "Catalog returned an invalid or unexpected response."},
+        503: {"model": ErrorResponse, "description": "Catalog is unavailable."},
+        504: {"model": ErrorResponse, "description": "Catalog request timed out."},
+    },
+)
 def generate_shopping_list(payload: ShoppingListRequest):
     return calculate_shopping_list(payload.recipes)

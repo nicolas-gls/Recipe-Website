@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.database import wait_for_database, check_read_write
 from app.migrations import run_migrations
+from app.catalog.models import HealthResponse
 from app.catalog.routes import router as catalog_router
 from app.config import UI_ORIGINS
 
@@ -80,7 +81,11 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.include_router(catalog_router)
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    responses={503: {"model": HealthResponse, "description": "Database unavailable."}},
+)
 def health_check():
     try:
         check_read_write()
