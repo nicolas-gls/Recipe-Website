@@ -116,8 +116,20 @@ jobs:
               -o none
           fi
 
-          CATALOG_REVISION="$(az containerapp revision list --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query "[?properties.template.revisionSuffix=='$REVISION_SUFFIX'].name | [0]" -o tsv)"
-          CATALOG_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$CATALOG_REVISION" --query properties.fqdn -o tsv)"
+          CATALOG_REVISION="${AZURE_CATALOG_APP}--${REVISION_SUFFIX}"
+          CATALOG_REVISION_FQDN=""
+          for attempt in {1..30}; do
+            CATALOG_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$CATALOG_REVISION" --query properties.fqdn -o tsv 2>/dev/null || true)"
+            if [[ -n "$CATALOG_REVISION_FQDN" ]]; then
+              break
+            fi
+            sleep 5
+          done
+          if [[ -z "$CATALOG_REVISION_FQDN" ]]; then
+            echo "Catalog revision $CATALOG_REVISION did not receive an FQDN."
+            az containerapp revision show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$CATALOG_REVISION" -o json || true
+            exit 1
+          fi
           CATALOG_FQDN="$(az containerapp show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
           echo "CATALOG_FQDN=$CATALOG_FQDN" >> "$GITHUB_ENV"
 
@@ -165,8 +177,20 @@ jobs:
               -o none
           fi
 
-          SHOPPING_REVISION="$(az containerapp revision list --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query "[?properties.template.revisionSuffix=='$REVISION_SUFFIX'].name | [0]" -o tsv)"
-          SHOPPING_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$SHOPPING_REVISION" --query properties.fqdn -o tsv)"
+          SHOPPING_REVISION="${AZURE_SHOPPING_APP}--${REVISION_SUFFIX}"
+          SHOPPING_REVISION_FQDN=""
+          for attempt in {1..30}; do
+            SHOPPING_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$SHOPPING_REVISION" --query properties.fqdn -o tsv 2>/dev/null || true)"
+            if [[ -n "$SHOPPING_REVISION_FQDN" ]]; then
+              break
+            fi
+            sleep 5
+          done
+          if [[ -z "$SHOPPING_REVISION_FQDN" ]]; then
+            echo "Shopping revision $SHOPPING_REVISION did not receive an FQDN."
+            az containerapp revision show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$SHOPPING_REVISION" -o json || true
+            exit 1
+          fi
 
           curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors \
             "https://$SHOPPING_REVISION_FQDN/health"
