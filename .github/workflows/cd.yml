@@ -1,0 +1,212 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+env:
+  AZURE_RESOURCE_GROUP: rg-ndgrass-ieu2024
+  AZURE_CONTAINER_ENVIRONMENT: ndgrass-ieu2024-env
+  AZURE_SQL_SERVER: ndgrass-ieu2024-sql.database.windows.net
+  AZURE_CATALOG_DATABASE: ndgrass-ieu2024-catalog-db
+  AZURE_SHOPPING_DATABASE: ndgrass-ieu2024-shopping-db
+  AZURE_CATALOG_APP: ndgrass-ieu2024-catalog
+  AZURE_SHOPPING_APP: ndgrass-ieu2024-shopping
+  AZURE_STORAGE_ACCOUNT: ndgrassieu2024ui
+  UI_ORIGIN: https://ndgrassieu2024ui.z28.web.core.windows.net/
+  REGISTRY: ghcr.io
+  IMAGE_NAMESPACE: ghcr.io/nicolas-gls
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Catalog image
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --provenance=false \
+            --file services/catalog/Dockerfile \
+            --tag "$IMAGE_NAMESPACE/recipe-catalog:$GITHUB_SHA" \
+            --push .
+
+      - name: Build and push Shopping image
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --provenance=false \
+            --file services/shopping/Dockerfile \
+            --tag "$IMAGE_NAMESPACE/recipe-shopping:$GITHUB_SHA" \
+            --push .
+
+      - name: Log in to Azure with GitHub OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Container Apps revisions
+        env:
+          CATALOG_DB_PASSWORD: ${{ secrets.CATALOG_DB_PASSWORD }}
+          SHOPPING_DB_PASSWORD: ${{ secrets.SHOPPING_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REVISION_SUFFIX="${GITHUB_SHA:0:12}"
+
+          CATALOG_DATABASE_URL="$(python3 -c 'import os; from urllib.parse import quote; print("mssql+pymssql://catalog_user:%s@%s:1433/%s" % (quote(os.environ["CATALOG_DB_PASSWORD"], safe=""), os.environ["AZURE_SQL_SERVER"], os.environ["AZURE_CATALOG_DATABASE"]))')"
+          SHOPPING_DATABASE_URL="$(python3 -c 'import os; from urllib.parse import quote; print("mssql+pymssql://shopping_user:%s@%s:1433/%s" % (quote(os.environ["SHOPPING_DB_PASSWORD"], safe=""), os.environ["AZURE_SQL_SERVER"], os.environ["AZURE_SHOPPING_DATABASE"]))')"
+
+          if az containerapp show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" -o none 2>/dev/null; then
+            az containerapp secret set \
+              --name "$AZURE_CATALOG_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --secrets catalog-db-url="$CATALOG_DATABASE_URL" \
+              -o none
+            az containerapp update \
+              --name "$AZURE_CATALOG_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --image "$IMAGE_NAMESPACE/recipe-catalog:$GITHUB_SHA" \
+              --revision-suffix "$REVISION_SUFFIX" \
+              --min-replicas 0 \
+              --max-replicas 1 \
+              --set-env-vars DATABASE_URL=secretref:catalog-db-url PORT=8000 UI_ORIGIN="$UI_ORIGIN" GIT_SHA="$GITHUB_SHA" \
+              -o none
+          else
+            az containerapp create \
+              --name "$AZURE_CATALOG_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --environment "$AZURE_CONTAINER_ENVIRONMENT" \
+              --image "$IMAGE_NAMESPACE/recipe-catalog:$GITHUB_SHA" \
+              --revision-suffix "$REVISION_SUFFIX" \
+              --revisions-mode multiple \
+              --ingress external \
+              --target-port 8000 \
+              --transport auto \
+              --cpu 0.5 \
+              --memory 1.0Gi \
+              --min-replicas 0 \
+              --max-replicas 1 \
+              --secrets catalog-db-url="$CATALOG_DATABASE_URL" \
+              --env-vars DATABASE_URL=secretref:catalog-db-url PORT=8000 UI_ORIGIN="$UI_ORIGIN" GIT_SHA="$GITHUB_SHA" \
+              -o none
+          fi
+
+          CATALOG_REVISION="$(az containerapp revision list --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query "[?properties.template.revisionSuffix=='$REVISION_SUFFIX'].name | [0]" -o tsv)"
+          CATALOG_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$CATALOG_REVISION" --query properties.fqdn -o tsv)"
+          CATALOG_FQDN="$(az containerapp show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
+          echo "CATALOG_FQDN=$CATALOG_FQDN" >> "$GITHUB_ENV"
+
+          curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors \
+            "https://$CATALOG_REVISION_FQDN/health"
+
+          az containerapp ingress traffic set \
+            --name "$AZURE_CATALOG_APP" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --revision-weight "$CATALOG_REVISION=100" \
+            -o none
+
+          if az containerapp show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" -o none 2>/dev/null; then
+            az containerapp secret set \
+              --name "$AZURE_SHOPPING_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --secrets shopping-db-url="$SHOPPING_DATABASE_URL" \
+              -o none
+            az containerapp update \
+              --name "$AZURE_SHOPPING_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --image "$IMAGE_NAMESPACE/recipe-shopping:$GITHUB_SHA" \
+              --revision-suffix "$REVISION_SUFFIX" \
+              --min-replicas 0 \
+              --max-replicas 1 \
+              --set-env-vars DATABASE_URL=secretref:shopping-db-url CATALOG_URL="https://$CATALOG_FQDN" PORT=8000 UI_ORIGIN="$UI_ORIGIN" GIT_SHA="$GITHUB_SHA" \
+              -o none
+          else
+            az containerapp create \
+              --name "$AZURE_SHOPPING_APP" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --environment "$AZURE_CONTAINER_ENVIRONMENT" \
+              --image "$IMAGE_NAMESPACE/recipe-shopping:$GITHUB_SHA" \
+              --revision-suffix "$REVISION_SUFFIX" \
+              --revisions-mode multiple \
+              --ingress external \
+              --target-port 8000 \
+              --transport auto \
+              --cpu 0.5 \
+              --memory 1.0Gi \
+              --min-replicas 0 \
+              --max-replicas 1 \
+              --secrets shopping-db-url="$SHOPPING_DATABASE_URL" \
+              --env-vars DATABASE_URL=secretref:shopping-db-url CATALOG_URL="https://$CATALOG_FQDN" PORT=8000 UI_ORIGIN="$UI_ORIGIN" GIT_SHA="$GITHUB_SHA" \
+              -o none
+          fi
+
+          SHOPPING_REVISION="$(az containerapp revision list --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query "[?properties.template.revisionSuffix=='$REVISION_SUFFIX'].name | [0]" -o tsv)"
+          SHOPPING_REVISION_FQDN="$(az containerapp revision show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --revision "$SHOPPING_REVISION" --query properties.fqdn -o tsv)"
+
+          curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors \
+            "https://$SHOPPING_REVISION_FQDN/health"
+
+          az containerapp ingress traffic set \
+            --name "$AZURE_SHOPPING_APP" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --revision-weight "$SHOPPING_REVISION=100" \
+            -o none
+
+          SHOPPING_FQDN="$(az containerapp show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
+          echo "SHOPPING_FQDN=$SHOPPING_FQDN" >> "$GITHUB_ENV"
+
+      - name: Upload static UI
+        shell: bash
+        run: |
+          set -euo pipefail
+          UI_DIR="$RUNNER_TEMP/recipe-ui"
+          mkdir -p "$UI_DIR"
+          cp -R ui/. "$UI_DIR/"
+          cat > "$UI_DIR/config.js" <<EOF
+          window.APP_CONFIG = {
+            catalogUrl: "https://${CATALOG_FQDN}",
+            shoppingUrl: "https://${SHOPPING_FQDN}"
+          };
+          EOF
+          STORAGE_KEY="$(az storage account keys list --resource-group "$AZURE_RESOURCE_GROUP" --account-name "$AZURE_STORAGE_ACCOUNT" --query '[0].value' -o tsv)"
+          az storage blob upload-batch \
+            --account-name "$AZURE_STORAGE_ACCOUNT" \
+            --account-key "$STORAGE_KEY" \
+            --destination '$web' \
+            --source "$UI_DIR" \
+            --overwrite \
+            --only-show-errors
+
+      - name: Verify public service health
+        shell: bash
+        run: |
+          set -euo pipefail
+          CATALOG_FQDN="$(az containerapp show --name "$AZURE_CATALOG_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
+          SHOPPING_FQDN="$(az containerapp show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
+          curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors "https://$CATALOG_FQDN/health"
+          curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors "https://$SHOPPING_FQDN/health"
