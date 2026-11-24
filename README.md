@@ -521,14 +521,16 @@ unset SQL_ADMIN_PASSWORD CATALOG_DB_PASSWORD SHOPPING_DB_PASSWORD AZ_ADMIN_IP
 ```
 
 Create the Consumption-plan Container Apps environment. Azure creates the
-associated Log Analytics workspace as part of this operation:
+associated Log Analytics workspace as part of this operation. Workload Profiles
+mode is required because the deployment uses multiple revisions and explicit
+traffic switching:
 
 ```bash
 az containerapp env create \
   --name "$AZ_CONTAINER_ENV" \
   --resource-group "$AZ_RESOURCE_GROUP" \
   --location "$AZ_REGION" \
-  --enable-workload-profiles false
+  --enable-workload-profiles true
 ```
 
 Create the user-assigned managed identity used by GitHub Actions, grant it
@@ -548,11 +550,11 @@ az role assignment create \
   --role Contributor \
   --scope "/subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$AZ_RESOURCE_GROUP"
 az identity federated-credential create \
-  --name github-main \
+  --name github-main-oidc \
   --identity-name "$AZ_IDENTITY" \
   --resource-group "$AZ_RESOURCE_GROUP" \
   --issuer https://token.actions.githubusercontent.com \
-  --subject repo:nicolas-gls/Recipe-Website:ref:refs/heads/main \
+  --subject repo:nicolas-gls@115884118/Recipe-Website@1379363739:ref:refs/heads/main \
   --audiences api://AzureADTokenExchange
 ```
 
