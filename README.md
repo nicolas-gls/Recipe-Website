@@ -232,9 +232,22 @@ DATABASE_URL='mssql+pymssql://user:pass@localhost:1433/shopping_db' \
 
 The GitHub Actions workflow in `.github/workflows/ci.yml` runs on pushes and
 pull requests. It lints Python sources, validates the generated specifications,
-initializes a SQL Server service container and runs migration/health smoke
+starts an ephemeral SQL Server container and runs migration/health smoke
 checks, runs both service suites with separate 70% coverage gates, and builds
-both Docker images.
+both Docker images. It also runs `pip-audit` against the pinned dependency
+manifests for software composition analysis (SCA) and Bandit against the
+Python source tree for static application security testing (SAST). Pushes to
+`main` run through this reusable CI workflow before the CD workflow can deploy.
+
+Run the security checks locally with:
+
+```bash
+python -m pip_audit \
+  -r requirements.txt \
+  -r services/catalog/requirements.txt \
+  -r services/shopping/requirements.txt
+bandit -r app services scripts -x '*/tests/*' -ll -ii
+```
 
 ## Azure infrastructure setup
 
@@ -266,6 +279,11 @@ export AZ_STORAGE_ACCOUNT="ndgrassieu2024ui"
 export AZ_SQL_SERVER="ndgrass-ieu2024-sql"
 export AZ_CONTAINER_ENV="ndgrass-ieu2024-env"
 export AZ_IDENTITY="ndgrass-ieu2024-github"
+export AZ_CATALOG_DATABASE="ndgrass-ieu2024-catalog-db"
+export AZ_SHOPPING_DATABASE="ndgrass-ieu2024-shopping-db"
+export AZ_CATALOG_APP="ndgrass-ieu2024-catalog"
+export AZ_SHOPPING_APP="ndgrass-ieu2024-shopping"
+export UI_ORIGIN="https://ndgrassieu2024ui.z28.web.core.windows.net"
 ```
 
 ### Sign in and select the subscription
@@ -594,8 +612,94 @@ images, pushes them to GHCR, signs in to Azure through OIDC, deploys each
 Container Apps revision with database URLs stored as Container Apps secrets,
 probes the revision health endpoints, switches 100% traffic only after a
 successful probe, generates `ui/config.js`, uploads the static UI, and runs
-post-deployment health checks. GHCR packages must be public so Azure can pull
-the images without storing registry credentials in Container Apps.
+post-deployment health checks. It then runs
+`scripts/verify_azure_deployment.sh`, which checks the public ingress and
+replica bounds of both Container Apps, `/health`, UI-origin CORS preflight,
+and the exact serverless SQL configuration of both databases: General Purpose,
+Gen5, 0.5-1 vCores, 60-minute auto-pause, and 32 GB maximum size. GHCR
+packages must be public so Azure can pull the images without storing registry
+credentials in Container Apps.
+
+### Verify the deployed Azure configuration
+
+After authenticating with Azure and exporting the variables from the setup
+sections above, run the same verification script used by CD:
+
+```bash
+az login --use-device-code
+bash scripts/verify_azure_deployment.sh
+```
+
+The script does not read or print database connection strings, passwords,
+subscription IDs, tenant IDs, or storage keys.
+
+### Capture SQL pause/resume evidence
+
+SQL pause/resume is a manual operational test because the serverless free offer
+uses Azure's configured auto-pause interval. Do not change the free-offer
+settings just to shorten the test. First record the deployed database
+configuration and current status without exposing credentials:
+
+```bash
+for db in "${AZ_PREFIX}-catalog-db" "${AZ_PREFIX}-shopping-db"; do
+  az sql db show \
+    --resource-group "$AZ_RESOURCE_GROUP" \
+    --server "$AZ_SQL_SERVER" \
+    --name "$db" \
+    --query '{name:name,status:status,computeModel:properties.computeModel,minCapacity:properties.minCapacity}' \
+    --output table
+done
+```
+
+Leave the application idle until both databases report a paused state. Poll
+without printing any connection information:
+
+```bash
+while true; do
+  for db in "${AZ_PREFIX}-catalog-db" "${AZ_PREFIX}-shopping-db"; do
+    az sql db show \
+      --resource-group "$AZ_RESOURCE_GROUP" \
+      --server "$AZ_SQL_SERVER" \
+      --name "$db" \
+      --query '{name:name,status:status}' \
+      --output table
+  done
+  sleep 60
+done
+```
+
+After a paused state is observed, record the first request and the recovery
+request. The first request may return a designed cold-start 503; the retry
+should return 200 after the Container App and SQL database resume:
+
+```bash
+CATALOG_URL="$(az containerapp show \
+  --name "$AZ_PREFIX-catalog" \
+  --resource-group "$AZ_RESOURCE_GROUP" \
+  --query properties.configuration.ingress.fqdn --output tsv)"
+
+date -u
+curl --silent --show-error --output /tmp/catalog-health-first.json \
+  --write-out 'first_request_status=%{http_code} duration_seconds=%{time_total}\n' \
+  "https://$CATALOG_URL/health" || true
+
+curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors \
+  --write-out 'recovery_status=%{http_code} duration_seconds=%{time_total}\n' \
+  "https://$CATALOG_URL/health"
+```
+
+Save the status/timing output and the corresponding Container Apps startup log
+for the report:
+
+```bash
+az containerapp logs show \
+  --name "$AZ_PREFIX-catalog" \
+  --resource-group "$AZ_RESOURCE_GROUP" \
+  --type system \
+  --tail 100
+```
+
+Repeat the health and log commands for Shopping if both databases were paused.
 
 ## Project layout
 

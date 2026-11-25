@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
+    branches-ignore:
+      - main
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read
@@ -11,28 +14,44 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          ACCEPT_EULA: Y
-          MSSQL_SA_PASSWORD: CiSqlPassword2026!
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'CiSqlPassword2026!' -C -b -Q 'SELECT 1' -o /dev/null"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 30
-          --health-start-period 20s
-
-    env:
-      CATALOG_DB_PASSWORD: CiCatalogPassword2026!
-      SHOPPING_DB_PASSWORD: CiShoppingPassword2026!
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Start ephemeral SQL Server
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MSSQL_SA_PASSWORD="$(openssl rand -hex 32)Aa1"
+          CATALOG_DB_PASSWORD="$(openssl rand -hex 32)Aa1"
+          SHOPPING_DB_PASSWORD="$(openssl rand -hex 32)Aa1"
+
+          echo "::add-mask::$MSSQL_SA_PASSWORD"
+          echo "::add-mask::$CATALOG_DB_PASSWORD"
+          echo "::add-mask::$SHOPPING_DB_PASSWORD"
+          {
+            echo "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD"
+            echo "CATALOG_DB_PASSWORD=$CATALOG_DB_PASSWORD"
+            echo "SHOPPING_DB_PASSWORD=$SHOPPING_DB_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+          docker run --detach --name ci-mssql --network host \
+            --env ACCEPT_EULA=Y \
+            --env MSSQL_SA_PASSWORD="$MSSQL_SA_PASSWORD" \
+            mcr.microsoft.com/mssql/server:2022-latest
+
+          for attempt in {1..60}; do
+            if docker exec ci-mssql /opt/mssql-tools18/bin/sqlcmd \
+              -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
+              -Q "SELECT 1" -o /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+
+          docker logs ci-mssql
+          exit 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -42,9 +61,23 @@ jobs:
       - name: Install CI tooling and service dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install ruff PyYAML jsonschema openapi-spec-validator
+          python -m pip install ruff PyYAML jsonschema openapi-spec-validator pip-audit bandit
           python -m pip install -r services/catalog/requirements-dev.txt
           python -m pip install -r services/shopping/requirements-dev.txt
+
+      - name: Dependency vulnerability scan (SCA)
+        run: >-
+          pip-audit
+          -r requirements.txt
+          -r services/catalog/requirements.txt
+          -r services/shopping/requirements.txt
+
+      - name: Python security scan (SAST)
+        run: >-
+          bandit -r app services scripts
+          -x '*/tests/*'
+          -ll
+          -ii
 
       - name: Lint Python sources
         run: ruff check services scripts --select E,F --ignore E501
@@ -66,8 +99,6 @@ jobs:
         run: python scripts/validate_specs.py
 
       - name: Initialize SQL Server databases and logins
-        env:
-          MSSQL_SA_PASSWORD: CiSqlPassword2026!
         run: >-
           docker run --rm --network host
           -v "${GITHUB_WORKSPACE}/db/init.sql:/db/init.sql:ro"
@@ -82,10 +113,10 @@ jobs:
           SHOPPING_DB_PASSWORD="$SHOPPING_DB_PASSWORD" -i /db/init.sql'
 
       - name: Run migration and database health smoke checks
-        env:
-          CATALOG_DATABASE_URL: mssql+pymssql://catalog_user:${{ env.CATALOG_DB_PASSWORD }}@127.0.0.1:1433/catalog_db
-          SHOPPING_DATABASE_URL: mssql+pymssql://shopping_user:${{ env.SHOPPING_DB_PASSWORD }}@127.0.0.1:1433/shopping_db
         run: |
+          CATALOG_DATABASE_URL="mssql+pymssql://catalog_user:${CATALOG_DB_PASSWORD}@127.0.0.1:1433/catalog_db"
+          SHOPPING_DATABASE_URL="mssql+pymssql://shopping_user:${SHOPPING_DB_PASSWORD}@127.0.0.1:1433/shopping_db"
+
           (
             cd services/catalog
             DATABASE_URL="$CATALOG_DATABASE_URL" PYTHONPATH=. python -c "from app.database import wait_for_database, check_read_write; from app.migrations import run_migrations; wait_for_database(); run_migrations(); check_read_write()"
@@ -96,19 +127,17 @@ jobs:
           )
 
       - name: Test Catalog with coverage
-        env:
-          DATABASE_URL: mssql+pymssql://catalog_user:${{ env.CATALOG_DB_PASSWORD }}@127.0.0.1:1433/catalog_db
         run: |
           cd services/catalog
+          DATABASE_URL="mssql+pymssql://catalog_user:${CATALOG_DB_PASSWORD}@127.0.0.1:1433/catalog_db" \
           PYTHONPATH=. python -m pytest -q tests \
             --cov=app.catalog.services --cov-report=term-missing --cov-fail-under=70
 
       - name: Test Shopping and cross-seam flow with coverage
-        env:
-          DATABASE_URL: mssql+pymssql://shopping_user:${{ env.SHOPPING_DB_PASSWORD }}@127.0.0.1:1433/shopping_db
-          CATALOG_URL: http://127.0.0.1:9
         run: |
           cd services/shopping
+          DATABASE_URL="mssql+pymssql://shopping_user:${SHOPPING_DB_PASSWORD}@127.0.0.1:1433/shopping_db" \
+          CATALOG_URL=http://127.0.0.1:9 \
           PYTHONPATH=. python -m pytest -q tests \
             --cov=app.shopping.services --cov-report=term-missing --cov-fail-under=70
 
@@ -117,3 +146,7 @@ jobs:
 
       - name: Build Shopping image
         run: docker build -f services/shopping/Dockerfile -t recipe-shopping:ci .
+
+      - name: Stop ephemeral SQL Server
+        if: always()
+        run: docker rm --force ci-mssql >/dev/null 2>&1 || true

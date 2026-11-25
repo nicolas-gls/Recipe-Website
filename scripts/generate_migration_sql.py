@@ -7,6 +7,18 @@ SOURCE_DB = ROOT / "data" / "app.db"
 CATALOG_MIGRATIONS = ROOT / "services" / "catalog" / "migrations"
 SHOPPING_MIGRATIONS = ROOT / "services" / "shopping" / "migrations"
 
+SOURCE_COLUMNS = {
+    "recipes": (
+        "id", "name", "description", "prep_time", "cook_time", "difficulty",
+        "servings", "steps", "image_url",
+    ),
+    "ingredients": ("id", "name", "category"),
+    "recipe_ingredients": ("id", "recipe_id", "ingredient_id", "amount", "unit"),
+    "supermarket_products": (
+        "id", "ingredient_id", "product_name", "price", "package_size", "package_unit",
+    ),
+}
+
 
 def sql_value(value):
     """Convert a SQLite value into a SQL Server literal."""
@@ -30,10 +42,17 @@ def sql_value(value):
 
 def insert_statements(cursor, table, columns):
     """Generate guarded INSERT statements while preserving original IDs."""
-    quoted_columns = ", ".join(f"[{column}]" for column in columns)
+    expected_columns = SOURCE_COLUMNS.get(table)
+    if expected_columns != tuple(columns):
+        raise ValueError(f"Unsupported migration source mapping: {table}")
+
+    quoted_table = '"' + table.replace('"', '""') + '"'
+    quoted_columns = ", ".join(
+        '"' + column.replace('"', '""') + '"' for column in columns
+    )
 
     rows = cursor.execute(
-        f'SELECT {", ".join(columns)} FROM "{table}" ORDER BY id'
+        f"SELECT {quoted_columns} FROM {quoted_table} ORDER BY id"  # nosec B608: identifiers are checked against SOURCE_COLUMNS above.
     ).fetchall()
 
     statements = [
