@@ -29,7 +29,14 @@ env:
   IMAGE_NAMESPACE: ghcr.io/nicolas-gls
 
 jobs:
+  ci:
+    name: CI gate
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
   deploy:
+    needs: ci
     runs-on: ubuntu-latest
 
     steps:
@@ -234,3 +241,15 @@ jobs:
           SHOPPING_FQDN="$(az containerapp show --name "$AZURE_SHOPPING_APP" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)"
           curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors "https://$CATALOG_FQDN/health"
           curl --fail --silent --show-error --retry 18 --retry-delay 10 --retry-all-errors "https://$SHOPPING_FQDN/health"
+
+      - name: Verify Azure deployment configuration and CORS
+        shell: bash
+        env:
+          AZ_RESOURCE_GROUP: ${{ env.AZURE_RESOURCE_GROUP }}
+          AZ_SQL_SERVER: ${{ env.AZURE_SQL_SERVER }}
+          AZ_CATALOG_DATABASE: ${{ env.AZURE_CATALOG_DATABASE }}
+          AZ_SHOPPING_DATABASE: ${{ env.AZURE_SHOPPING_DATABASE }}
+          AZ_CATALOG_APP: ${{ env.AZURE_CATALOG_APP }}
+          AZ_SHOPPING_APP: ${{ env.AZURE_SHOPPING_APP }}
+          UI_ORIGIN: ${{ env.UI_ORIGIN }}
+        run: bash scripts/verify_azure_deployment.sh
