@@ -1,9 +1,9 @@
 # Recipe Hub
 
-A recipe catalog and shopping-list web app built with FastAPI, SQLite, and
-server-rendered Jinja2 templates. Browse and search recipes, scale ingredient
-quantities by servings, and combine ingredients from multiple recipes into a
-shopping list with estimated package-based prices.
+A recipe catalog and shopping-list web app built as two FastAPI services with
+SQL Server databases and a static HTML/CSS/JavaScript UI. Browse and search
+recipes, scale ingredient quantities by servings, and combine ingredients from
+multiple recipes into a shopping list with estimated package-based prices.
 
 ## Features
 
@@ -19,14 +19,12 @@ provide a full workflow for creating and editing recipes.
 
 ## Requirements
 
-- Python 3.10 or newer
-- pip
+- Docker Desktop with Compose
+- Python 3.10 or newer for running the service tests and validation tools
 
-Install the dependencies:
-
-```bash
-python -m pip install -r requirements.txt
-```
+The Catalog and Shopping services each have their own dependency manifests in
+`services/catalog/` and `services/shopping/`. The normal local workflow uses
+Docker Compose, which builds the service images from those manifests.
 
 ## Run the split application with Docker Compose
 
@@ -95,13 +93,6 @@ tests. They are kept with their respective services:
 - `services/shopping/tests/test_cross_seam_integration.py` tests Shopping calling
   Catalog over HTTP.
 
-The original `tests/` directory is retained temporarily as Assignment 1
-regression coverage. It tests the old monolith and SQLite implementation, is
-not included in the Assignment 2 service coverage figures, and is planned for
-deletion when the unused monolithic application is removed. It is run only to
-confirm that the migration has not accidentally damaged the reference
-implementation.
-
 Run the split-service tests with:
 
 ```bash
@@ -126,41 +117,10 @@ cross-seam integration test starts a local HTTP Catalog stub and verifies that
 Shopping calls it over HTTP before using Shopping's own product database. It
 does not require Azure or a live SQL Server.
 
-## Run locally
-
-Start the application from the repository root:
-
-```bash
-python app.py
-```
-
-The development server is available at <http://0.0.0.0:8000>. The port can be
-changed with the `PORT` environment variable, for example:
-
-```bash
-PORT=8080 python app.py
-```
-
-On startup, the app creates the SQLite schema if it does not exist. If the
-database has no recipes, it seeds the database from `data/recipes.json` and
-`data/supermarket_products.csv`. The database is stored at `data/app.db`.
-
-> **Warning:** Running `python -m app.seed` manually resets and repopulates the
-> database. This removes existing database data before reseeding.
-
-## Using the application
-
-- Web interface: <http://0.0.0.0:8000/>
-- Health check: <http://0.0.0.0:8000/health>
-- Interactive API documentation: <http://0.0.0.0:8000/docs>
-
-The shopping-list page uses the browser's local storage to retain the selected
-recipes in that browser.
-
 ## API
 
-The FastAPI documentation at `/docs` describes the request and response models.
-The primary endpoints are:
+The service-specific FastAPI documentation at `/docs` describes the request and
+response models. The primary endpoints are:
 
 | Method | Endpoint                   | Purpose                                                  |
 | ------ | -------------------------- | -------------------------------------------------------- |
@@ -182,33 +142,23 @@ Example shopping-list request:
 
 ## Data model
 
-SQLite stores recipes and ingredients as a many-to-many relationship through
-`recipe_ingredients`, which records the amount and unit used by each recipe.
-`supermarket_products` associates product/package options and prices with shared
-ingredient records. This lets the shopping-list logic aggregate requirements
-across recipes and estimate the cost of purchasing whole packages.
+Catalog owns recipes, ingredients, and the `recipe_ingredients` relationship in
+its SQL Server database. Shopping owns supermarket products and pricing in its
+own SQL Server database. Shopping requests recipe data from Catalog over HTTP;
+it never reads the Catalog database directly. Versioned migrations and seed
+data are committed under each service's `migrations/` directory.
 
-The source data is in `data/recipes.json` and
-`data/supermarket_products.csv`. Recipe images uploaded through the interface
-are stored under `app/static/uploads/`.
+## Historical Assignment 1 artifacts and ADRs
 
-## Automated business-logic tests
-
-Tests focus on the catalog and shopping service logic rather than framework
-routing. They cover recipe search, serving-size scaling, unit normalization,
-ingredient aggregation, package selection, estimated pricing, and relevant
-empty or invalid input cases. Database-dependent tests use a temporary SQLite
-database.
-
-Run tests and measure coverage with:
-
-```bash
-python -m pytest -q --cov=app.catalog.services --cov=app.shopping.services --cov-report=term-missing --cov-fail-under=70
-```
-
-Latest verified result: **17 passed**; **99.03% combined coverage** (catalog
-service: **100%**, shopping service: **98%**). The command requires `pytest` and
-`pytest-cov`, both listed in `requirements.txt`.
+`ADR.md` records decisions made throughout the assignment. ADR-7 was written
+when the original monolithic application, its SQLite source database, and the
+migration generator were still present. The repository has since removed the
+monolith from the active application, but the original JSON/CSV source data and
+`scripts/generate_migration_sql.py` are retained as historical artifacts for
+grading and reproducibility. The current services do not depend on them: their
+committed SQL migrations are the source of truth for local and Azure database
+initialization. To review ADR-7 in its original context, check the repository
+state at the time that ADR was written.
 
 ## OpenAPI and CI
 
@@ -218,7 +168,7 @@ The service contracts are committed as generated OpenAPI 3.1 documents:
 - `services/shopping/openapi.yaml`
 
 The root `system.yaml` describes the UI, service paths, environment variables,
-cross-service call, and planned Azure resources. It is validated against
+cross-service call, and Azure resources. It is validated against
 `system.schema.json` together with both OpenAPI documents.
 
 Generate the service documents locally with:
@@ -243,10 +193,9 @@ Run the security checks locally with:
 
 ```bash
 python -m pip_audit \
-  -r requirements.txt \
   -r services/catalog/requirements.txt \
   -r services/shopping/requirements.txt
-bandit -r app services scripts -x '*/tests/*' -ll -ii
+bandit -r services scripts -x '*/tests/*' -ll -ii
 ```
 
 ## Azure infrastructure setup
@@ -705,41 +654,58 @@ Repeat the health and log commands for Shopping if both databases were paused.
 
 ```text
 Recipe-Website/
-├── app.py
-├── requirements.txt
+├── .dockerignore
+├── .env.example
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── cd.yml
 ├── ADR.md
 ├── AI_USAGE.md
 ├── README.md
 ├── assignment_1.md
-├── data/
-│   ├── supermarket_products.csv
+├── daily_plan_assignment_2.txt
+├── docker-compose.yml
+├── data/                         # retained Assignment 1 source artifacts
 │   ├── recipes.json
-│   └── app.db
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── database.py
-│   ├── seed.py
-│   ├── main.py
+│   └── supermarket_products.csv
+├── db/
+│   └── init.sql
+├── scripts/
+│   ├── generate_migration_sql.py # historical Assignment 1 migration tool
+│   ├── generate_openapi.py
+│   ├── validate_specs.py
+│   └── verify_azure_deployment.sh
+├── system.yaml
+├── system.schema.json
+├── services/
 │   ├── catalog/
-│   │   ├── __init__.py
-│   │   ├── models.py
-│   │   ├── services.py
-│   │   └── routes.py
-│   ├── shopping/
-│   │   ├── __init__.py
-│   │   ├── models.py
-│   │   ├── services.py
-│   │   └── routes.py
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── recipes.html
-│   │   ├── recipe_detail.html
-│   │   └── shopping_list.html
-│   └── static/
-│       ├── uploads/
-│       └── style.css
-└── tests/
-    ├── __init__.py
-    └── test_domain_services.py
+│   │   ├── Dockerfile
+│   │   ├── app/
+│   │   │   └── static/uploads/   # Catalog recipe images
+│   │   ├── migrations/
+│   │   ├── openapi.yaml
+│   │   ├── requirements-dev.txt
+│   │   ├── requirements.txt
+│   │   └── tests/
+│   └── shopping/
+│       ├── Dockerfile
+│       ├── app/
+│       ├── migrations/
+│       ├── openapi.yaml
+│       ├── requirements-dev.txt
+│       ├── requirements.txt
+│       └── tests/
+└── ui/
+    ├── index.html
+    ├── recipe.html
+    ├── shopping.html
+    ├── app.js
+    ├── config.js
+    └── styles.css
 ```
+
+The assignment instruction PDFs and the Assignment 1 report are also retained
+at the repository root as documentation. The old monolithic runtime files,
+root tests, SQLite database, and root dependency manifest are not part of the
+active project layout.
