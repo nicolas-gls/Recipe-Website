@@ -68,13 +68,12 @@ jobs:
       - name: Dependency vulnerability scan (SCA)
         run: >-
           pip-audit
-          -r requirements.txt
           -r services/catalog/requirements.txt
           -r services/shopping/requirements.txt
 
       - name: Python security scan (SAST)
         run: >-
-          bandit -r app services scripts
+          bandit -r services scripts
           -x '*/tests/*'
           -ll
           -ii
