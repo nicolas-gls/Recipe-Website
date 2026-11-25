@@ -5,6 +5,7 @@ import socket
 from typing import List, Dict, Any
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+from urllib.parse import urlsplit
 
 from fastapi import HTTPException
 from sqlalchemy import text
@@ -48,8 +49,15 @@ def get_recipe_from_catalog(
         f"{CATALOG_URL.rstrip('/')}/recipes/" f"{recipe_id}?servings={target_servings}"
     )
 
+    parsed_url = urlsplit(url)
+    if parsed_url.scheme not in {"http", "https"} or not parsed_url.netloc:
+        raise HTTPException(
+            status_code=503,
+            detail="Catalog service URL must use HTTP or HTTPS.",
+        )
+
     try:
-        with urlopen(url, timeout=5) as response:
+        with urlopen(url, timeout=5) as response:  # nosec B310: scheme is restricted above.
             return json.loads(response.read().decode("utf-8"))
 
     except HTTPError as error:
